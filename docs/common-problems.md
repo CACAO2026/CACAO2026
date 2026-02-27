@@ -1,6 +1,14 @@
 # 1. Problems on Push
 
-## `Rejected - non-fast-forward`
+## Push is not possible, VS Code suggests to look at log
+
+Try to run `git push` from the terminal in the root folder of the projet. If you get a message starting with `Pulling without specifying how to reconcile divergent branches is discouraged.`, then solve the problem by running `git config pull.rebase false`. 
+
+## Push is not possible, username and email are not specified
+
+Open a terminal and add your name and username by running `git config --global user.name "YourName YourSurname"` and `git config --global user.email "yourmail@yourdomain.com"`.
+
+## Push is not possible, `Rejected - non-fast-forward`
 
 A team mate pushed something new to your team repository before you.
 
