@@ -2,19 +2,36 @@ package abstraction.eq3Producteur3;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.filiere.IActeur;
 import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.general.Variable;
+import abstraction.eqXRomu.general.VariableReadOnly;
+import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.produits.IProduit;
 
 public class Producteur3Acteur implements IActeur {
-	
+	private Journal journal_periode;
 	protected int cryptogramme;
+	protected HashMap<Feve,Variable> stock;
+	private double stockTotal;
+	private Variable StockToltal;
+	private Journal journal;
+	
 
 	public Producteur3Acteur() {
+		this.journal_periode = new Journal("Journal des périodes", this);
+		this.journal = new Journal("Journal des stocks", this);
+		this.stock = new HashMap<Feve, Variable>();
+		this.stockTotal=0;
+		for (Feve f : Feve.values()) {
+    		this.stock.put(f, new VariableReadOnly(this + " Stock " + f, this, 10.0));
+			this.stockTotal=this.stockTotal+this.stock.get(f).getValeur();
+		}
+		this.StockToltal= new VariableReadOnly(this + " Stock total", this, this.stockTotal);
 	}
 	
 	public void initialiser() {
@@ -33,6 +50,17 @@ public class Producteur3Acteur implements IActeur {
 	////////////////////////////////////////////////////////
 
 	public void next() {
+		// défi 1 
+		this.journal_periode.ajouter("période : "+ Filiere.LA_FILIERE.getEtape());
+		//défi 2
+		this.stockTotal=0;
+		this.stock.clear();
+		for (Feve f : Feve.values()) {
+    		this.stock.put(f, new VariableReadOnly(this + " Stock " + f, this, 20.0));
+    		this.stockTotal=this.stockTotal+this.stock.get(f).getValeur();
+		}
+		this.StockToltal= new VariableReadOnly(this + " Stock total", this, this.stockTotal);
+		this.journal.ajouter("stocks" + this.stockTotal);
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -45,19 +73,26 @@ public class Producteur3Acteur implements IActeur {
 
 	// Renvoie les indicateurs
 	public List<Variable> getIndicateurs() {
+		System.err.println("ok");
 		List<Variable> res = new ArrayList<Variable>();
+		System.err.println(this.stockTotal);
+		res.addAll(this.stock.values());
+		res.add(this.StockToltal);
 		return res;
 	}
 
 	// Renvoie les parametres
 	public List<Variable> getParametres() {
 		List<Variable> res=new ArrayList<Variable>();
+		res.addAll(this.stock.values());
 		return res;
 	}
 
 	// Renvoie les journaux
 	public List<Journal> getJournaux() {
 		List<Journal> res=new ArrayList<Journal>();
+		res.add(this.journal_periode);
+		res.add(this.journal);
 		return res;
 	}
 
