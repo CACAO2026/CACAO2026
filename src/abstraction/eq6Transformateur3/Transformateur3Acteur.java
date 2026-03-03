@@ -12,6 +12,7 @@ import abstraction.eqXRomu.produits.IProduit;
 
 public class Transformateur3Acteur implements IActeur {
 	
+	protected Journal journal = new Journal("Journal Eq6", this);
 	protected int cryptogramme;
 
 	public Transformateur3Acteur() {
@@ -33,6 +34,8 @@ public class Transformateur3Acteur implements IActeur {
 	////////////////////////////////////////////////////////
 
 	public void next() {
+		int etape = Filiere.LA_FILIERE.getEtape();
+		journal.ajouter("Étape " + etape);
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -58,6 +61,7 @@ public class Transformateur3Acteur implements IActeur {
 	// Renvoie les journaux
 	public List<Journal> getJournaux() {
 		List<Journal> res=new ArrayList<Journal>();
+		res.add(this.journal);
 		return res;
 	}
 
