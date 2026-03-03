@@ -12,15 +12,18 @@ import abstraction.eqXRomu.produits.IProduit;
 
 public class Producteur1Acteur implements IActeur {
 
-	protected Journal journal;
 
+	protected Journal journal;
 	protected int cryptogramme;
+	protected int stock;
 
 	public Producteur1Acteur() {
 
-		//Créer un journal à chaque next)
+		//Créer un journal à chaque next  Elise Dossal
 		this.journal = new Journal("Journal "+this.getNom(), this);
-		this.journal.ajouter("Check");
+
+		//Ajoutez un indicateur du volume total de notre stock Elise Dossal
+		this.stock = 0;
 	}
 	
 	public void initialiser() {
@@ -39,6 +42,8 @@ public class Producteur1Acteur implements IActeur {
 	////////////////////////////////////////////////////////
 
 	public void next() {
+		this.journal.ajouter("Check");
+		
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
