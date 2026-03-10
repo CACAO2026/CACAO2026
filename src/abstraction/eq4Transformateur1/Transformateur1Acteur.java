@@ -14,19 +14,18 @@ import abstraction.eqXRomu.produits.IProduit;
 public class Transformateur1Acteur implements IActeur {
 	/**@author Ewan Lefort */
 	private Journal journal= new Journal("numéro de l'étape",this );
-	Transformateur1Stock stock= new Transformateur1Stock();
+	private Transformateur1Stock stock= new Transformateur1Stock();
 	protected int cryptogramme;
 
 	public Transformateur1Acteur() {
 	}
 	/**@author Ewan Lefort */
 	public void initialiser() 
-	{if (Filiere.LA_FILIERE.getEtape()>=0){
-		journal.ajouter("etape:"+Filiere.LA_FILIERE.getEtape());
+	{
 		
 	}
 
-	}
+	
 
 	public String getNom() {// NE PAS MODIFIER
 		return "EQ4";
@@ -42,7 +41,7 @@ public class Transformateur1Acteur implements IActeur {
 	/**@author Ewan Lefort */
 	public void next() {
 		if (Filiere.LA_FILIERE.getEtape()>=0){
-			int etape= Filiere.LA_FILIERE.getEtape()+1;
+			int etape= Filiere.LA_FILIERE.getEtape();
 		journal.ajouter("etape:"+etape);}
 	}
 
@@ -53,6 +52,11 @@ public class Transformateur1Acteur implements IActeur {
 	public String getDescription() {
 		return "Bla bla bla";
 	}
+
+	public Transformateur1Stock getStock(){
+		return this.getStock();
+	}
+
 	/**@author Ewan Lefort */
 	// Renvoie les indicateurs.
 	public List<Variable> getIndicateurs() {
