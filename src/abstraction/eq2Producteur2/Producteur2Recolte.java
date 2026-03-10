@@ -11,14 +11,12 @@ import abstraction.eqXRomu.produits.Feve;
 
 public class Producteur2Recolte extends Producteur2Acteur {
 
-    // 1. Tes attributs
     protected List<Plantation> plantations;
     protected HashMap<Feve, Double> feve_recolte;
     protected HashMap<Feve, Double> cout_recolte;
     private Journal Journalterrains;
     private Journal JournalRecolte;
 
-    // 2. Le constructeur
     public Producteur2Recolte() {
         super();
         this.plantations = new ArrayList<>();
@@ -27,7 +25,6 @@ public class Producteur2Recolte extends Producteur2Acteur {
         this.JournalRecolte = new Journal("Journal Recolte Eq2", this);
         this.Journalterrains = new Journal("Journal Terrains Eq2", this);
 
-        // Initialise les HashMaps avec 0.0 pour chaque type de fève
         for (Feve f : Feve.values()) {
             this.feve_recolte.put(f, 0.0);
             this.cout_recolte.put(f, 0.0);
