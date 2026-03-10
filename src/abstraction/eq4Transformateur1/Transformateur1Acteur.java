@@ -16,6 +16,8 @@ public class Transformateur1Acteur implements IActeur {
 	private Journal journal= new Journal("numéro de l'étape",this );
 	private Transformateur1Stock stock= new Transformateur1Stock();
 	protected int cryptogramme;
+	Variable totalstocks= new Variable("EQ4T Total Stocks", "<html>Quantite totale de feves en stock</html>", this,0);
+		
 
 	public Transformateur1Acteur() {
 	}
@@ -42,7 +44,9 @@ public class Transformateur1Acteur implements IActeur {
 	public void next() {
 		if (Filiere.LA_FILIERE.getEtape()>=0){
 			int etape= Filiere.LA_FILIERE.getEtape();
-		journal.ajouter("etape:"+etape);}
+		journal.ajouter("etape:"+etape);
+		this.totalstocks.setValeur(this, this.stock.getTotalStocks(), cryptogramme);
+	}
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -61,8 +65,7 @@ public class Transformateur1Acteur implements IActeur {
 	// Renvoie les indicateurs.
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
-		Variable totalstocks= new Variable("EQ4T Total Stocks", "<html>Quantite totale de feves en stock</html>", this,0);
-		totalstocks.setValeur(this, this.stock.getTotalStocks(), cryptogramme);
+		
 		res.add(totalstocks);
 		return res;
 	}

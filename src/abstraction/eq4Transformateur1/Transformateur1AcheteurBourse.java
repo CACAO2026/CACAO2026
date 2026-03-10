@@ -17,8 +17,8 @@ public class Transformateur1AcheteurBourse extends Transformateur1Acteur impleme
     }
     /**@author Safta Yassine */ 
     public double demande(Feve f, double cours){
-        if (this.getStock().getStockFeve(f)<20000) {
-			return Math.max(20000-this.getStock().getStockFeve(f),  10); // on n'achete jamais moins de 10T
+        if (f.getGamme()==Gamme.MQ && !f.isEquitable()) {
+			return 80; // on n'achete jamais moins de 10T
 		}
 		else{
             return 0;
