@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.filiere.IActeur;
@@ -14,7 +15,7 @@ import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.produits.IProduit;
 
 import java.util.HashMap;
-
+/** @author Le Clézio Brevael */
 public class StockFeve{
 
     private HashMap<Feve , Integer> stock;
@@ -51,15 +52,8 @@ public class StockFeve{
     public int getQuantite(Feve produit) {
         return stock.getOrDefault(produit, 0);
     }
-    
-    // Retourne le volume total (somme des quantites) du stock de feves
-    public int getVolumeTotal() {
-        int total = 0;
-        for (Integer q : stock.values()) {
-            if (q != null) {
-                total += q;
-            }
-        }
-        return total;
-    }
+
+    public Set<Feve> getFeves() {
+    return stock.keySet();
+}
 }
