@@ -11,7 +11,7 @@ import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.produits.Feve;
 
 /**
- * @author Théophile Trillat & Elise Dossal
+ * @author Théophile Trillat
  */
 public class Producteur1AcheteurBourse extends Producteur1Acteur implements IAcheteurBourse {
 
