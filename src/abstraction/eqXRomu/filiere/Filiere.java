@@ -10,11 +10,17 @@ import abstraction.eqXRomu.clients.ClientFinal;
 import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
+import abstraction.eqXRomu.produits.IProduit;
 import presentation.FenetrePrincipale;
 
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Classe modelisant une filiere vue comme un regroupement d'acteurs, 
@@ -52,6 +58,7 @@ public class Filiere implements IAssermente {
 	private List<ChocolatDeMarque> chocolatsProduits; // La liste de tous les types de chocolat de marque produits.
 	private HashMap<ChocolatDeMarque, List<IFabricantChocolatDeMarque>> fabricantsChocolatDeMarque; // Associe a chaque chocolat de marque la liste des acteurs qui le produise 
 	private HashMap<String, Double> qualiteMoyenneMarque; // Associe a une marque la qualite moyenne des produits portant cette marque
+	private List<Echange> echanges; // Historique des echanges 
 
 	// Influence des tetes de gondole sur la notoriete des marques
 	private List<String> presenceEnTG; // A chaque step, si les produits d'une marque representent au moins 5% des quantites mis 
@@ -533,6 +540,44 @@ public class Filiere implements IAssermente {
 	public double getVentes(ChocolatDeMarque choco, int etape) {
 		return clientsFinaux.get(0).getVentes(etape, choco);
 	}
+	/*********************************************************************************/
+	/**       METHODES ACCESSIBLES UNIQUEMENT AUX ASSERMENTES (superviseurs)        **/
+	/*********************************************************************************/
+	public void ajouterEchange(IActeur acteurAssermente, int cryptogramme,IActeur acteur,IProduit produit, double volume, String typeEchange) {
+		if (acteur==null) {
+			erreur(" Appel de ajouterEchange de Filiere avec null pour acteur");
+		}  else if (acteurAssermente==null) {
+			erreur(" Appel de ajouterEchange de Filiere avec null pour acteur assermente");
+		}  else if (produit==null) {
+			erreur(" Appel de ajouterEchange de Filiere avec null pour produit");
+		}  else if (this.cryptos.get(acteurAssermente)!=cryptogramme) {
+			erreur(" Appel de ajouterEchange de Filiere avec un cryptogramme qui n'est pas celui de l'acteur acredite");
+		} else if (!(acteurAssermente instanceof IAssermente)) {
+			System.err.println(" Appel de ajouterEchange de Filiere par un acteur non assermente");
+			Filiere.LA_FILIERE.getBanque().faireFaillite(acteur, this, cryptogramme);
+		}  else  {
+			this.echanges.add(new Echange(this.etape, acteur, produit, volume, typeEchange));
+		} 
+	}
+	public void echangesToCSV() {
+		//	Variable aff = Filiere.LA_FILIERE.getIndicateur("BourseCacao Aff.Graph");
+		if (getIndicateur("BourseCacao Aff.Graph.").getValeur()!=0.0) {
+
+
+			try {
+				PrintWriter aEcrire= new PrintWriter(new BufferedWriter(new FileWriter("docs"+File.separator+"Echanges.csv")));
+				aEcrire.println("ETAPE;ACTEUR;PRODUIT;VOLUME");
+				for (Echange ec : this.echanges) {						
+					aEcrire.println( ec.toCSV() );
+					//							System.out.println(s);
+				}
+				aEcrire.close();
+			}
+			catch (IOException e) {
+				throw new Error("Une operation sur les fichiers a leve l'exception "+e) ;
+			}
+		}	
+	}
 
 	/***********************************************************************/
 	/**                METHODES INTERNES (non accessibles)                **/
@@ -612,5 +657,37 @@ public class Filiere implements IAssermente {
 
 	public void setCryptos(HashMap<IActeur, Integer> cryptos) {
 		this.cryptos = cryptos;
+	}
+}
+class Echange {
+	private int step;
+	private IActeur acteur;
+	private IProduit produit;
+	private double volume;
+	private String typeEchange;
+	public Echange(int step, IActeur acteur, IProduit produit, double volume, String typeEchange) {
+		this.step = step;
+		this.acteur = acteur;
+		this.produit = produit;
+		this.volume = volume;	
+		this.typeEchange = typeEchange;	
+	}
+	public int getStep() {
+		return step;
+	}
+	public IActeur getActeur() {
+		return acteur;
+	}
+	public IProduit getProduit() {
+		return produit;
+	}
+	public double getVolume() {
+		return volume;
+	}
+	public String getTypeEchange() {
+		return typeEchange;
+	}
+	public String toCSV() {
+		return step + ";" + acteur.getNom() + ";" + produit + ";" + volume+";" + typeEchange;
 	}
 }
