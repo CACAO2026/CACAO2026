@@ -2,19 +2,35 @@ package abstraction.eq3Producteur3;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.filiere.IActeur;
 import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.general.Variable;
+import abstraction.eqXRomu.general.VariableReadOnly;
+import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.produits.IProduit;
 
 public class Producteur3Acteur implements IActeur {
-	
+	private Journal journal_periode;
 	protected int cryptogramme;
+	protected Producteur3Stock stock; 
+	private Variable StockTotal;
+	
 
 	public Producteur3Acteur() {
+		/** @author Vassili Spiridonov */
+		this.journal_periode = new Journal("Journal des périodes", this); 
+
+		
+		/** @author Guillaume Leroy */
+		this.stock = new Producteur3Stock();
+		this.stock.addStock(Feve.F_BQ , 250.0);
+		this.stock.addStock(Feve.F_MQ , 250.0);
+		this.stock.addStock(Feve.F_HQ , 250.0);
+		this.StockTotal= new VariableReadOnly(this + " Stock total", this, this.stock.getStockTotal());
 	}
 	
 	public void initialiser() {
@@ -33,6 +49,9 @@ public class Producteur3Acteur implements IActeur {
 	////////////////////////////////////////////////////////
 
 	public void next() {
+		// défi 1 
+		this.journal_periode.ajouter("période : "+ Filiere.LA_FILIERE.getEtape());
+		this.StockTotal.setValeur(this,this.stock.getStockTotal(), cryptogramme);
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -46,6 +65,7 @@ public class Producteur3Acteur implements IActeur {
 	// Renvoie les indicateurs
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
+		res.add(this.StockTotal);
 		return res;
 	}
 
@@ -58,6 +78,7 @@ public class Producteur3Acteur implements IActeur {
 	// Renvoie les journaux
 	public List<Journal> getJournaux() {
 		List<Journal> res=new ArrayList<Journal>();
+		res.add(this.journal_periode);
 		return res;
 	}
 
