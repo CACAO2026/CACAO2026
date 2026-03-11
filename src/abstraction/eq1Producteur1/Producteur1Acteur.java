@@ -11,7 +11,7 @@ import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.general.VariableReadOnly;
 import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.produits.IProduit;
-import abstraction.eqXRomu.encheres.MiseAuxEncheres;
+
 
 /** 
  * @author Elise Dossal
