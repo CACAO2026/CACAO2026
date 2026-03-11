@@ -7,9 +7,11 @@ import abstraction.eqXRomu.encheres.Enchere;
 import abstraction.eqXRomu.encheres.IVendeurAuxEncheres;
 import abstraction.eqXRomu.encheres.MiseAuxEncheres;
 import abstraction.eqXRomu.produits.Feve;
+import abstraction.eqXRomu.filiere.Filiere;
+import abstraction.eqXRomu.produits.Feve;
 
 /** 
- * @author Elise Dossal
+ * @author Elise Dossal & Théophile Trillat
  */
 public class Producteur1VendeurBourse extends Producteur1AcheteurBourse implements IVendeurAuxEncheres{
 ///*
