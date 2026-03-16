@@ -93,6 +93,7 @@ public class Filiere implements IAssermente {
 		this.qualiteMoyenneMarque = new HashMap<String, Double>();
 		this.presenceEnTG = new LinkedList<String>();
 		this.nbPresencesEnTg = new HashMap<String, Integer>();
+		this.echanges = new ArrayList<Echange>();	
 		this.ajouterActeur(this.laBanque);
 	}
 
