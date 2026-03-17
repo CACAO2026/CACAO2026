@@ -20,7 +20,7 @@ public class ExempleAbsAcheteurAuxEncheres implements IActeur {
 	protected HashMap<IProduit, Double> stock;
 	protected Chocolat choco;
 	protected String marque;
-	protected double prixInit;
+	protected double prixInit; 
 
 
 	public ExempleAbsAcheteurAuxEncheres(double prixInit) {	
