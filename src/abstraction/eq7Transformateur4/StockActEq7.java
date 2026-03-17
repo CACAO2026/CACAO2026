@@ -15,6 +15,8 @@ public class StockActEq7 implements Comparable<StockActEq7> {
     En effet, après l'achat, les N tonnes de fèves HQ passent en MQ au bout de 3 mois soit 6 next. 
     A chaque next, le compteur timer est décrémenté de 1 et lorsque ce dernier arrive à 0, on procède au changement de quality.
     Dans ce cas, au 6e next après l'achat, on enlève N tonnes du stock HQ et on rajoute N tonnes du stock MQ
+
+    Auteur -> Matteo
     */
     private int timer; 
     private Gamme quality;

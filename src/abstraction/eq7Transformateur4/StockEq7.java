@@ -1,6 +1,7 @@
 package abstraction.eq7Transformateur4;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import abstraction.eqXRomu.filiere.IActeur;
 import abstraction.eqXRomu.general.Variable;
@@ -9,7 +10,8 @@ import abstraction.eqXRomu.produits.Gamme;
 public class StockEq7 {
     /*
     Cette classe implémente un stock de fèves dynamique où on peut ajouter des fèves, en retirer. La gestion de la baisse
-    de la qualité de fèves se gère automatiquement.
+    naturelle de la qualité de fèves se gère automatiquement.
+    Auter -> Matteo
     */
     private Variable LowQ; // Stock baisse qualité
     private Variable MedQ; // Stock moyenne qualité
@@ -58,6 +60,22 @@ public class StockEq7 {
     public void AddHighQ(double valeur){
         this.actions.add(new StockActEq7(6,Gamme.HQ, valeur));
         this.HighQ.ajouter(this.createur, valeur);
+    }
+
+
+    public void add(double valeur, Gamme quality){
+        //Traite la qualité
+        if (quality==Gamme.HQ){
+            this.AddHighQ(valeur);
+        }
+        else{
+            if(quality==Gamme.MQ){
+                this.AddMedQ(valeur);
+            }
+            else{
+                this.AddLowQ(valeur);
+            }
+        }
     }
 
     //Enlève dans la file d'action la quantité quantity avec la qualité quality
@@ -129,8 +147,9 @@ public class StockEq7 {
             this.actions.get(i).next();
         } 
         int i=0;
+        Collections.sort(this.actions);
         //Pour chaque action dont le timer est à 0, on réalise les modifications nécessaires
-        while ((i<this.actions.size())&&(this.actions.get(i).getTimer()==0)){
+        while ((i<this.actions.size() && this.actions.get(i).getTimer()<=0)){
             StockActEq7 action= this.actions.get(i);
             if (action.isHighQ()){
                 this.HighQ.retirer(this.createur, action.getQuantity());
@@ -152,25 +171,24 @@ public class StockEq7 {
             }
         }
     }
-    /* 
-    public static void main(String[] args) {
+    /* public static void main(String[] args) {
         IActeur acteur = new Transformateur4Acteur();
         StockEq7 stock = new StockEq7(acteur);
-        stock.AddHighQ(90.);
+        stock.add(90.,Gamme.MQ);
         System.out.println(stock.actions.toString());
         System.out.println(stock.toString());
 
         stock.next();
-        stock.AddHighQ(80.);
+        stock.add(80.,Gamme.MQ);
         System.out.println(stock.toString());
 
         stock.next();
-        stock.RemoveHighQ(40.);
+        stock.RemoveMedQ(40.);
         System.out.println(stock.actions.toString());
         System.out.println(stock.toString());
 
         stock.next();
-        stock.RemoveHighQ( 70.);
+        stock.RemoveMedQ( 70.);
         System.out.println(stock.actions.toString());
         System.out.println(stock.toString());
 
@@ -180,13 +198,13 @@ public class StockEq7 {
         }
         System.out.println(stock.toString());
         System.out.println(stock.actions.toString());
-        for (int i=0; i<12; i++){
+        for (int i=0; i<28; i++){
             stock.next();
         }
         stock.RemoveHighQ(50.);
         System.out.println(stock.toString());
         System.out.println(stock.actions.toString());
-    }
-        */
+    }  */
+        
 
 }
