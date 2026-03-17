@@ -20,7 +20,6 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 	protected HashMap<Feve, Variable> stocks;
 	protected HashMap<Feve,Variable> stockvar;
 	protected HashMap<Feve,Double> fevesSeches;
-	private int numero = 0;
 	protected Journal journal = new Journal("Journal Eq2", this);
 	protected Journal JournalBanque  = new Journal("Journal Banque Eq2", this);;
 	protected List<Plantation> plantations;
@@ -64,8 +63,7 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 		}
 		this.stockTotal.setValeur(this, total);
 		
-		journal.ajouter("Numero : " + numero + " | Stock total : " + total + " fèves");
-		numero++;
+		journal.ajouter("Numero : " + Filiere.LA_FILIERE.getEtape() + " | Stock total : " + total + " fèves");
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
