@@ -2,6 +2,9 @@ package abstraction.eq9Distributeur2;
 
 import java.util.List;
 
+import abstraction.eqXRomu.filiere.Filiere;
+import abstraction.eqXRomu.produits.ChocolatDeMarque;
+
 public class Pseudo {
     
 
@@ -124,6 +127,41 @@ public class Pseudo {
 
         // Sinon on conserve si l’écart est faible (≤3%) et l’historique est bon
         return diffRel <= 0.03 && scoreFidelite >= 0.7;
+    }
+
+    /**
+     * Achats en volume – V1 (tres basique).
+     *
+     * Regle : on vise un stock cible = ventes recentes * COUVERTURE_STEPS.
+     * Si le prix actuel est sous le prix moyen, on achete un peu plus.
+     */
+    public static class AchatsEnVolumeV1 {
+        private static final int COUVERTURE_STEPS = 6;
+        private static final double FACTEUR_PRIX_BAS = 1.50;
+
+        public double quantiteAAcheter(ChocolatDeMarque produit, double prixActuel, double stockActuel, double capaciteStock) {
+            if (produit == null || Filiere.LA_FILIERE == null) {
+                return 0.0;
+            }
+            if (prixActuel <= 0.0 || capaciteStock <= 0.0 || stockActuel >= capaciteStock) {
+                return 0.0;
+            }
+
+            int step = Filiere.LA_FILIERE.getEtape();
+            double ventesRecentes = (step >= 1) ? Filiere.LA_FILIERE.getVentes(produit, step - 1) : 0.0;
+            double prixMoyen = (step >= 1) ? Filiere.LA_FILIERE.prixMoyen(produit, step - 1) : Double.NaN;
+
+            double stockCible = ventesRecentes * COUVERTURE_STEPS;
+            double besoin = Math.max(0.0, stockCible - stockActuel);
+            double marge = Math.max(0.0, capaciteStock - stockActuel);
+            double quantite = Math.min(besoin, marge);
+
+            if (prixMoyen > 0.0 && prixActuel < prixMoyen && quantite > 0.0) {
+                quantite = Math.min(quantite * FACTEUR_PRIX_BAS, marge);
+            }
+
+            return Math.max(0.0, quantite);
+        }
     }
 
 }
