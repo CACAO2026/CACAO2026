@@ -1,6 +1,5 @@
 package presentation.secondaire;
 
-import abstraction.eqXRomu.general.Journal;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -13,12 +12,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
+
+import abstraction.eqXRomu.general.Journal;
 
 /**
  * Classe modelisant une fenetre presentant graphiquement un Journal.
