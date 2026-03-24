@@ -48,13 +48,9 @@ public class Producteur2Stock {
 
 
     public void next() {
-        updateProd();
         setStockMin(0.1);
         prodParStep();
-        check();
-        taxeStockage();
-        transfo();
-
+        TaxeStockage();
         setTotalStock();
     }
 
@@ -120,25 +116,12 @@ public class Producteur2Stock {
         return total;
     }
 
-    public List<Variable> getIndicateurs() { //Modifie correctement les affichages
-		List<Variable> res = super.getIndicateurs();
-
-        res.addAll(stockvar.values());
-		res.add(this.stockTotal);
-		return res;
-	}
-
-    
-	public List<Journal> getJournaux() { //Mets à jour les journaux
-		List<Journal> res = super.getJournaux();
-		res.add(JournalStock);
-		return res;
-	}
 
     public void TaxeStockage(){
         double tonnes = this.stockTotal.getValeur(cryptogramme);
-        Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Stockage", tonnes*cout_stockage);
-        JournalBanque.ajouter("On paie "+tonnes*cout_stockage+" à la banque due au stockage");
+    }
+
+    public void next() {
     }
 }
 
