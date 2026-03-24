@@ -82,7 +82,7 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
             double prixConcurrent = prixCD * 0.98; // hypothèse prix concurrent meilleur
             boolean garder = garderFournisseur(vendeur, prixCD, prixConcurrent);
             if (!garder) {
-                this.journal.ajouter("🔁 Remplacement opportuniste du fournisseur " + vendeur.getNom() + " (prix=" + prixCD + ")");
+                this.journal.ajouter("Remplacement opportuniste du fournisseur " + vendeur.getNom() + " (prix=" + prixCD + ")");
             }
         }
     }
@@ -100,7 +100,7 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
     public boolean achete(IProduit produit) {
         // On accepte tous les contrats cadres pour les chocolats de marque
         if (produit instanceof ChocolatDeMarque) {
-            this.journal.ajouter("🤝 Prêt à négocier un contrat cadre pour " + produit);
+            this.journal.ajouter("Prêt à négocier un contrat cadre pour " + produit);
             return true;
         }
         return false;

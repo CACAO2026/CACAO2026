@@ -109,7 +109,7 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
 				double ajout = 5000.0; // 5 tonnes = 5000 kg
 				this.stock.put(choco, quantiteActuelle + ajout);
 
-				journal.ajouter("📦 Réapprovisionnement " + choco.getNom() + " : +" + (ajout/1000) + " tonnes");
+				journal.ajouter("Réapprovisionnement " + choco.getNom() + " : +" + (ajout/1000) + " tonnes");
 			}
 		}
 
@@ -117,7 +117,7 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
 		this.indicateurStockTotal.setValeur(this, getStockTotal());
 
 		// Log du stock total
-		journal.ajouter("📊 Stock total : " + (getStockTotal()/1000) + " tonnes");
+		journal.ajouter("Stock total : " + (getStockTotal()/1000) + " tonnes");
 	}
 		/** @author Anass Ouisrani*/
 	protected double getStockTotal() {
@@ -177,7 +177,7 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
 	// afin de vous en informer.
 	public void notificationFaillite(IActeur acteur) {
 		if (acteur != null) {
-			journal.ajouter("💸 Information : " + acteur.getNom() + " a fait faillite");
+			journal.ajouter("Information : " + acteur.getNom() + " a fait faillite");
 		}
 	}
 
@@ -185,9 +185,9 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
 	// operation est appelee pour vous en informer
 	public void notificationOperationBancaire(double montant) {
 		if (montant > 0) {
-			journal.ajouter("💰 Crédit bancaire : +" + montant + "€");
+			journal.ajouter("Crédit bancaire : +" + montant + "€");
 		} else {
-			journal.ajouter("💸 Débit bancaire : " + montant + "€");
+			journal.ajouter("Débit bancaire : " + montant + "€");
 		}
 	}
 
@@ -231,7 +231,7 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
 @Override
     public double quantiteEnVente(ChocolatDeMarque choco, int crypto) {
         if (crypto != this.cryptogramme) {
-            this.journal.ajouter("🚫 Tentative accès non autorisé quantiteEnVente");
+            this.journal.ajouter("Tentative accès non autorisé quantiteEnVente");
             return 0.0;
         }
         double qStock = this.stock.getOrDefault(choco, 0.0);
@@ -241,7 +241,7 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
 @Override
     public double quantiteEnVenteTG(ChocolatDeMarque choco, int crypto) {
         if (crypto != this.cryptogramme) {
-            this.journal.ajouter("🚫 Tentative accès non autorisé quantiteEnVenteTG");
+            this.journal.ajouter("Tentative accès non autorisé quantiteEnVenteTG");
             return 0.0;
         }
         return quantiteEnVente(choco, crypto) * 0.10;
@@ -250,22 +250,22 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
 @Override
     public void vendre(ClientFinal client, ChocolatDeMarque choco, double quantite, double montant, int crypto) {
         if (crypto != this.cryptogramme) {
-            this.journal.ajouter("🚫 Tentative accès non autorisé vendre");
+            this.journal.ajouter("Tentative accès non autorisé vendre");
             return;
         }
         double stockActuel = this.stock.getOrDefault(choco, 0.0);
         if (quantite <= 0 || quantite > stockActuel) {
-            this.journal.ajouter("❌ Stock insuffisant pour " + choco.getNom() + ": demandé " + (quantite/1000) + "t, dispo " + (stockActuel/1000) + "t");
+            this.journal.ajouter("Stock insuffisant pour " + choco.getNom() + ": demandé " + (quantite/1000) + "t, dispo " + (stockActuel/1000) + "t");
             return;
         }
         this.stock.put(choco, stockActuel - quantite);
         this.indicateurStockTotal.setValeur(this, getStockTotal());
-        this.journal.ajouter("✅ Vente de " + (quantite/1000) + "t de " + choco.getNom() + " pour " + montant + " €");
+        this.journal.ajouter("Vente de " + (quantite/1000) + "t de " + choco.getNom() + " pour " + montant + " €");
 }
 
 @Override
     public void notificationRayonVide(ChocolatDeMarque choco, int crypto) {
         if (crypto != this.cryptogramme) return;
-        this.journal.ajouter("🚨 RUPTURE STOCK : " + choco.getNom() + " - Rayon vide ! Augmenter les achats.");
+        this.journal.ajouter("RUPTURE STOCK : " + choco.getNom() + " - Rayon vide ! Augmenter les achats.");
     }
 }

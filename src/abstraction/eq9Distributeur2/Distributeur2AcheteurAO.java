@@ -53,14 +53,14 @@ public class Distributeur2AcheteurAO extends Distributeur2Acteur implements IAch
                 OffreVente offreRetenue = superviseurAO.acheterParAO(this, this.cryptogramme, choco, quantiteAO);
                 
                 if (offreRetenue != null) {
-                    this.journal.ajouter("✅ Achat réussi : " + (quantiteAO/1000) + "t de " + 
+                    this.journal.ajouter("Achat réussi : " + (quantiteAO/1000) + "t de " + 
                                        choco.getNom() + " à " + offreRetenue.getPrixT() + "€/T chez " + 
                                        offreRetenue.getVendeur().getNom());
                     
                     this.stock.put(choco, stockActuel + quantiteAO);
                     this.indicateurStockTotal.setValeur(this, getStockTotal());
                 } else {
-                    this.journal.ajouter("❌ Échec : Aucune offre acceptable pour " + choco.getNom());
+                    this.journal.ajouter("Échec : Aucune offre acceptable pour " + choco.getNom());
                 }
             }
         }
