@@ -121,7 +121,5 @@ public class Producteur2Stock {
         double tonnes = this.stockTotal.getValeur(cryptogramme);
     }
 
-    public void next() {
-    }
 }
 
