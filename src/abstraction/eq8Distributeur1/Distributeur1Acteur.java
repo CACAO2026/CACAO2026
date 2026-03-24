@@ -26,7 +26,6 @@ public class Distributeur1Acteur implements IActeur {
 	protected HashMap<IProduit, Double> Stock;/** @author Alexandre Cornet */
 	protected double TailleRayon;/** @author Alexandre Cornet */
 	protected double volumerayon;/** @author Alexandre Cornet */
-
 	/**
          * @author Alexandre Cornet
 		 * @author Ewen Landron
@@ -162,9 +161,10 @@ public class Distributeur1Acteur implements IActeur {
 			this.Rayon.put(p,f+d);
 			this.Stock.put(p,q-d);
 			String s="Vous avez ajouté " + d + "T de " + p + " en rayon.";
+			this.volumerayon+=d;
+			this.volumeStock.ajouter(this, -d);
 			return s;
 		}
-
 	}
 
 	public String getDescription() {
