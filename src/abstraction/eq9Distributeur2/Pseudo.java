@@ -160,8 +160,38 @@ public class Pseudo {
             if (prixMoyen > 0.0 && prixActuel < prixMoyen && quantite > 0.0) {
                 quantite = Math.min(quantite * FACTEUR_PRIX_BAS, marge);
             }
-
             return Math.max(0.0, quantite);
+        }
+    }
+
+    // Prevention des ruptures – V1.
+    /** @author Paul Rossignol */
+    public static class PreventionRupturesV1 {
+        private static final int STOCK_MIN_STEPS = 3;
+
+        /**
+         * @param produit produit vise
+         * @param stockActuel stock actuel
+         * @param attractivite facteur simple (1.0 = neutre, >1.0 = plus attractif)
+         * @param seuilCritique coefficient de securite 
+         * @param capaciteStock capacite max de stockage
+         * @return quantite a reapprovisionner pour eviter la rupture
+         */
+        public double quantiteAReappro(ChocolatDeMarque produit, double stockActuel, double attractivite, double seuilCritique, double capaciteStock) {
+            if (produit == null || Filiere.LA_FILIERE == null) {
+                return 0.0;
+            }
+            if (capaciteStock <= 0.0 || stockActuel >= capaciteStock) {
+                return 0.0;
+            }
+
+            int step = Filiere.LA_FILIERE.getEtape();
+            double ventesRecentes = (step >= 1) ? Filiere.LA_FILIERE.getVentes(produit, step - 1) : 0.0;
+
+            double stockMinimal = ventesRecentes * STOCK_MIN_STEPS * Math.max(0.5, attractivite) * Math.max(1.0, seuilCritique);
+            double besoin = Math.max(0.0, stockMinimal - stockActuel);
+            double marge = Math.max(0.0, capaciteStock - stockActuel);
+            return Math.min(besoin, marge);
         }
     }
 
