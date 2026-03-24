@@ -15,13 +15,12 @@ import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
 
-public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
+public class Distributeur2Acteur implements IActeur, IDistributeurChocolatDeMarque {
 	protected int cryptogramme;
 	protected Journal journal;
 	protected Map<IProduit, Double> stock;
 	protected Variable indicateurStockTotal;
-	protected Map<ChocolatDeMarque, Double> prixParProduit;
-    protected double prixBase = 8.5;
+	protected Map<ChocolatDeMarque, Double> prix;
     protected double capaciteRayonKg = 50000.0;
 
 	/**
@@ -47,11 +46,7 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
         }
         this.indicateurStockTotal.setValeur(this, getStockTotal());
 
-        //  initialisation des prix
-        this.prixParProduit = new HashMap<>();
-        for (ChocolatDeMarque choco : Filiere.LA_FILIERE.getChocolatsProduits()) {
-            this.prixParProduit.put(choco, prixBase);
-        }
+        this.prix = new HashMap<>();
     }
 
 	public String getNom() {// NE PAS MODIFIER
@@ -176,12 +171,22 @@ public class Distributeur2Acteur implements IDistributeurChocolatDeMarque {
 	////////////////////////////////////////////////////////
     //         IDistributeurChocolatDeMarque              //
     ////////////////////////////////////////////////////////
-	//// @author Anass Ouisrani
 
 @Override
-    public double prix(ChocolatDeMarque choco) {
-        return prixParProduit.getOrDefault(choco, prixBase);
-    }
+	public double prix(ChocolatDeMarque choco) {
+		if (!prix.containsKey(choco)) {
+			switch (choco.getChocolat()) {
+				case C_HQ_E: return 26000.0;
+				case C_HQ:   return 22000.0;
+				case C_MQ_E: return 18000.0;
+				case C_MQ:   return 16000.0;
+				case C_BQ_E: return 14000.0;
+				case C_BQ:   return 12000.0;
+				default:     return 0.0;
+			}
+		}
+		return prix.get(choco);
+	}
 
 @Override
     public double quantiteEnVente(ChocolatDeMarque choco, int crypto) {
