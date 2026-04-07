@@ -34,6 +34,7 @@ public class Transformateur2Acteur implements IActeur {
 		this.Journaux.add(new Journal("Stock Feves", this));
 		this.Journaux.add(new Journal("Stock Chocolat", this));
 		this.Journaux.add(new Journal("Achat Contrat Cadre", this));
+		this.Journaux.add(new Journal("Vente Contrat Cadre", this));
 		this.Journaux.add(new Journal("Achat Enchère", this));
 		this.Journaux.add(new Journal("Achat Bourse", this));
 		this.Journaux.add(new Journal("Vente AO", this));
@@ -65,7 +66,7 @@ public class Transformateur2Acteur implements IActeur {
 	/** @author Pierre
 	 */
 	public void next() {
-		for (int i = 0; i < 8; i++){
+		for (int i = 0; i < 9; i++){
 			this.Journaux.get(i).ajouter("Etape : "+ Integer.toString((Filiere.LA_FILIERE.getEtape()))+ "\n");
 		}
 	}
