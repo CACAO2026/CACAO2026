@@ -3,6 +3,7 @@ package abstraction.eq5Transformateur2;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.lang.Integer;
 
@@ -21,11 +22,16 @@ public class Transformateur2Stock extends Transformateur2Acteur{
     private HashMap<Chocolat, Double> stock_chocolat;
     private Variable stock_feve_affichage;
     private Variable stock_chocolat_affichage;
+    private List SacsHQ;
+    private List SacsMQ;
+    private List SacsBQ;
+
     
     // Constructeur
 
     /** @author Pierre
      * @author Raphaël
+     * @author Maxence
     **/ 
     public Transformateur2Stock(){
         this.stock_feve = new HashMap<Feve, Double>();
@@ -45,6 +51,10 @@ public class Transformateur2Stock extends Transformateur2Acteur{
         
         this.stock_feve_affichage=new Variable("EQ5 Stock Fève", this, 0);
         this.stock_chocolat_affichage=new Variable("EQ5 Stock Chocloat", this, 0);
+
+        this.SacsHQ=new LinkedList<>();
+        this.SacsMQ=new LinkedList<>();
+        this.SacsBQ=new LinkedList<>();
     }
 
     // Méthodes
