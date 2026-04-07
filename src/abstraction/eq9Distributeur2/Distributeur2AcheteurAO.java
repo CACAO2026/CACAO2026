@@ -149,7 +149,6 @@ public class Distributeur2AcheteurAO extends Distributeur2Acteur implements IAch
     }
 
     /**
-     * @author Anass OUISRANI 
      * @author Paul ROSSIGNOL
      */
     protected double evaluerConditionsOffre(OffreVente offre) {
