@@ -130,8 +130,8 @@ public class Approvisionnement2 extends Distributeur1Acteur {
         if (stockActuelGamme < volumeCibleGamme) {
             double besoin = volumeCibleGamme - stockActuelGamme;
             double quantiteAchetee = methodeIntermediaireAchat(cdm, besoin, prixCible, prixMax);
-            
             double nouveauStock = stockPredit.getOrDefault(cdm, 0.0) + quantiteAchetee;
+            this.journal3.ajouter("Achat de "+ quantiteAchetee + " T de : "+cdm);
             stockPredit.put(cdm, nouveauStock);
         }
     }

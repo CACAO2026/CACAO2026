@@ -7,7 +7,7 @@ import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 
-public class Distributeur1 extends MiseEnRayon  {
+public class Distributeur1 extends MiseEnRayon {
 	
 	public Distributeur1() {
 		super();
