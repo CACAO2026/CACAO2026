@@ -102,16 +102,16 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 		}
 		this.journal2.ajouter("----------------------------------------------");
 		//Journal Frais
-		if(this.volumerayon<this.TailleRayon){
-			b.payerCout(b,this.cryptogramme,"Taille de Rayon",this.TailleRayon-this.volumerayon);
-			this.TailleRayon=this.volumerayon;
-		}
+		
 		this.journal4.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
 		b.payerCout(this, this.cryptogramme, "Frais de Rayonnage", TailleRayon*0.01);
 		this.journal4.ajouter("Frais de Rayon : "+TailleRayon*0.01 +" €");
 		b.payerCout(this, this.cryptogramme, "Frais de Stockage", v1*0.01);
 		this.journal4.ajouter("Frais de Stockage : "+v1*0.01+" €");
 		this.journal4.ajouter("----------------------------------------------");
+		if(this.volumerayon<this.TailleRayon){
+			this.TailleRayon=this.volumerayon;
+		}
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -288,20 +288,20 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 	/** @author Alexandre Cornet */
 	@Override
 	public double quantiteEnVenteTG(ChocolatDeMarque choco, int crypto) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'quantiteEnVenteTG'");
+		return 0.0;
+		
 	}
 	/** @author Alexandre Cornet */
 	@Override
 	public void vendre(ClientFinal client, ChocolatDeMarque choco, double quantite, double montant, int crypto) {
 		double v=getQuantiteEnRayon(choco,this.cryptogramme);
 		this.Rayon.put((IProduit)(choco),v-quantite);
-		throw new UnsupportedOperationException("Unimplemented method 'vendre'");
+
 	}
 	/** @author Alexandre Cornet */
 	@Override
 	public void notificationRayonVide(ChocolatDeMarque choco, int crypto) {
 		this.journal0.ajouter("Rayon de "+choco+" en rupture");
-		throw new UnsupportedOperationException("Unimplemented method 'notificationRayonVide'");
+		
 	}
 }
