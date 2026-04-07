@@ -23,7 +23,7 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 	protected Journal journal = new Journal("Journal Eq2", this);
 	protected Journal JournalBanque  = new Journal("Journal Banque Eq2", this);;
 	protected List<Plantation> plantations;
-	protected Producteur2Stock stockManager;
+	protected Producteur2couts stockManager;
 
 	/** @author Thomas */
 	public Producteur2Acteur() {
@@ -34,7 +34,7 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 		}
 		this.stockTotal = new Variable("Stock Total EQ2", this, 0.0);
 		this.plantations = new ArrayList<Plantation>();
-		this.stockManager = new Producteur2Stock();
+		this.stockManager = new Producteur2couts();
 		for (Feve f : Feve.values()) {
 			this.stocks.get(f).setValeur(this, this.stockManager.stock_initial.get(f));
 		}
@@ -151,11 +151,7 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 
 	public double getQuantiteEnStock(IProduit p, int cryptogramme) {
 		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
-			if (p instanceof Feve) {
-				Variable v = this.stocks.get((Feve)p);
-				return v != null ? v.getValeur() : 0.0;
-			}
-			return 0.0;
+			return 0; // A modifier
 		} else {
 			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
 		}
@@ -189,5 +185,9 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 	@Override
 	public void notificationBlackList(int dureeEnStep) {
 		journal.ajouter("Blacklisté pendant " + dureeEnStep + " étapes");
+	}
+
+	public double restantDu(Feve f) {
+		return 0.0; // Pas de contrats cadres, donc rien réservé
 	}
 }
