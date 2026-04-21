@@ -10,6 +10,7 @@ public class Producteur1Cooperative extends Producteur1Planteur{
     
     HashMap<String, Double> coopNonEq = new HashMap<>();
     HashMap<String, Double> coopEq = new HashMap<>();
+    double pourcentageEnfant = 0.5 ;
 
     public Producteur1Cooperative(){
         this.coopEq.put("salaire adultes",2.);
@@ -58,6 +59,18 @@ public class Producteur1Cooperative extends Producteur1Planteur{
 
     public double getSalaireEnfant(){
         return this.coopEq.get("salaire enfants");
+    }
+
+    public void setPourcentageEnfants(double pourcent){
+        this.pourcentageEnfant = pourcent;
+
+        //Mise à jour du nombre d'enfants et d'adultes en non Eq
+        int nbAdulteNonEq = (int) Math.floor(this.getTaillePlantation(false)*30);
+        double nbEnfant = (double) (int) Math.floor(pourcent * nbAdulteNonEq);
+
+        this.coopNonEq.put("nombre enfants", (double) nbEnfant ) ;
+        this.coopNonEq.put( "nombre adultes", (double) nbAdulteNonEq - nbEnfant*2);
+
     }
 
     public void payerSalaire(){
