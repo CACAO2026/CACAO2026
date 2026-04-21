@@ -45,10 +45,10 @@ public class Transformateur2VendeurAppelOffre extends Transformateur2AchatAppelO
     }
 
 	public void notifierVenteAO(OffreVente propositionRetenue){
-        this.getJournaux().get(6).ajouter(propositionRetenue.toString()+ "\n");
+        this.getJournaux().get(7).ajouter(propositionRetenue.toString()+ "\n");
     }
 
 	public void notifierPropositionNonRetenueAO(OffreVente propositionRefusee){
-        this.getJournaux().get(6).ajouter(propositionRefusee.toString()+ "\n");
+        this.getJournaux().get(7).ajouter(propositionRefusee.toString()+ "\n");
     }
 }
