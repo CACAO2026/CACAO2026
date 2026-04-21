@@ -22,16 +22,25 @@ public class Agriculteurs3 {
         this.nbInterim = new HashMap<Gamme, Integer>();
         this.nbEnfant = 0; // Entrerpise éthique : aucun enfants exploités 
         this.salaireCDI = 12.0; // On les rémunères au max décidé dans les règles de fonctionnement (0.8€/jour)
-        this.salaireInterim = 24.0; // On paye deux fois plus chère les intérimaires
+        this.salaireInterim = 2*this.salaireCDI; // On paye deux fois plus chère les intérimaires
         this.salaireEnfant = 3.0;  // D'après les règles de fonctionnemments : 0.2€/jour 
         this.repartirTravailleurs(plantation);
     }
 
     public void repartirTravailleurs(Plantation3 plantation) {
         for (Gamme g : Gamme.values()) {
-            double surfaceGamme = plantation.getSurface(g); 
+            double surfaceGamme = plantation.plantation.get(g).getNbHectare(); 
+
+            int ratio;
+            if (g == Gamme.HQ) {
+                ratio = 7;
+            } else if (g == Gamme.MQ) {
+                ratio = 5;
+            } else {
+                ratio = 3; 
+            }
             
-            int besoinTotalGamme = (int) (surfaceGamme * 8);
+            int besoinTotalGamme = (int) (surfaceGamme * ratio);
 
             this.nbCDI.put(g, besoinTotalGamme);
             this.nbInterim.put(g, 0);
@@ -62,13 +71,13 @@ public class Agriculteurs3 {
 
     //Cette fonction décrit notre engagement éthique 
     
-    public boolean estEthique() {
+    public boolean estEthique(Gamme g) {
         boolean PasExploitationEnfant = this.nbEnfant == 0;
-        boolean SalaireMinimum = this.salaireCDI >= 7.5; //Salaire minimum de 0.5€/jour 
-        double totalAdultes = this.nbCDI + this.nbInterim;
+        boolean SalaireMinimum = this.salaireCDI >= 12; //Salaire de 0.8€/jour 
+        double totalAdultes = this.nbCDI.getOrDefault(g, 0) + this.nbInterim.getOrDefault(g, 0);
         boolean ContratLongTerme = false;
         if (totalAdultes > 0) {
-            ContratLongTerme = (this.nbCDI / totalAdultes) >= 0.8;
+            ContratLongTerme = (this.nbCDI.getOrDefault(g, 0) / totalAdultes) >= 0.8;
         }
 
         return PasExploitationEnfant && SalaireMinimum && ContratLongTerme;
@@ -76,7 +85,7 @@ public class Agriculteurs3 {
 
     //Verification de notre éligibilité 
     public String getStatutHappyWorker() {
-        if (this.estEthique()) {
+        if (this.estEthique(null)) {
             return "Eligible au label Happy Worker";
         }
         return "Non éligible au label Happy Worker.";
