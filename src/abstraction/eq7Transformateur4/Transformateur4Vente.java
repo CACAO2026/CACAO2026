@@ -17,8 +17,7 @@ public class Transformateur4Vente extends Transformateur4Production implements I
     @Override
     public Echeancier contrePropositionDuVendeur(ExemplaireContratCadre contrat) {
         // TODO Auto-generated method stub
-        Echeancier echeance= new Echeancier(0);
-        return null;//echeance;
+        return contrat.getEcheancier();//echeance;
     }
 
     @Override
