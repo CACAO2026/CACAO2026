@@ -76,8 +76,8 @@ public class EQ9_StrategieFixationPrix {
      marge de base selon le type de produit
      */
     private double obtenirMargeBasePourProduit(String nomProduit) {
-        // Marque propre  = marge maximale
-        if nomProduit.contains("EQ9") {
+        // Notre marque propre EQ9 = marge maximale
+        if (nomProduit != null && nomProduit.contains("EQ9")) {
             return MARGE_MARQUE_PROPRE;  // 35%
         }
         

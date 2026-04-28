@@ -8,9 +8,9 @@ import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.general.Journal;
 
 /**
- * Gère les différentes marques et leurs spécificités
- * Chaque transformateur a sa marque
- * EQ9 a sa marque propre Carrefour Sélection
+ * Gere les differentes marques et leurs specificites.
+ * Chaque transformateur a sa marque.
+ * EQ9 a sa propre marque : EQ9.
  * 
  * @author Équipe EQ9
  * @version V2 - 28/04/2026
