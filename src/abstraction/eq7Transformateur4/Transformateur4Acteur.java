@@ -19,6 +19,7 @@ public class Transformateur4Acteur implements IActeur {
 	protected Journal journal_production;
 	protected Journal journal_achat_bourse;
 	protected Journal journal_vente_CC;
+	protected Journal journal_negociation_CC;
 	private StockEq7 stock_Equitable;
 	private StockEq7 stock_PasEquitable;
 	private Variable LQ; //Indicateur LQ Equitable + pas equitable
@@ -41,6 +42,7 @@ public class Transformateur4Acteur implements IActeur {
 		this.journal_vente_CC = new Journal("Ventes CC", this);
 		this.journal_production = new Journal("Production", this);
 		this.journal_achat_bourse = new Journal("Achat en bourse",this);
+		this.journal_negociation_CC = new Journal("Negociations Contrats Cadres",this);
 		
 		//Paul
 		this.StockChoco_BQ=new Variable("StockChoco_BQ", this, 0);
@@ -115,6 +117,7 @@ public class Transformateur4Acteur implements IActeur {
 		res.add(this.journal_achat_bourse);
 		res.add(this.journal_production);
 		res.add(this.journal_vente_CC);
+		res.add(this.journal_negociation_CC);
 		
 		return res;
 	}
