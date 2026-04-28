@@ -21,19 +21,16 @@ public class Transformateur4Vente extends Transformateur4Production implements I
 
     @Override
     public double propositionPrix(ExemplaireContratCadre contrat) {
-        // TODO Auto-generated method stub
         return 6500.;}
 
     @Override
     public double contrePropositionPrixVendeur(ExemplaireContratCadre contrat) {
-        // TODO Auto-generated method stub
         return 6000.;
     }
 
     @Override
     public void notificationNouveauContratCadre(ExemplaireContratCadre contrat) {
-        //TODO Auto-generated method stub
-        System.out.println("Contrat accepté : " + contrat);
+        this.journal_vente_CC.ajouter("Contrat accepté avec " + contrat.getAcheteur() + " pour " + contrat.getQuantiteTotale() + " tonnes de " + contrat.getProduit() + " à " + contrat.getPrix() + " € la tonne");
     
     }
 
@@ -41,7 +38,7 @@ public class Transformateur4Vente extends Transformateur4Production implements I
     public double livrer(IProduit produit, double quantite, ExemplaireContratCadre contrat) {
         double alivrer = Math.min(quantite, this.get_StockChoco_BQ().getValeur());
         this.get_StockChoco_BQ().ajouter(this,-alivrer);
-        System.out.println(quantite);
+        this.journal_vente_CC.ajouter("Vente de " + alivrer + " tonnes de Chocolat à " + contrat.getAcheteur());
         return alivrer;
     }
     
