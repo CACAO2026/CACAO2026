@@ -39,9 +39,10 @@ public class Producteur2VendeurCC extends Producteur2Bourse implements IVendeurC
         for (Feve f : stocks.keySet()) {
             double disponible = stocks.get(f).getValeur(this.cryptogramme) - restantDu(f);
             this.journalContratCadre.ajouter("Stock disponible " + f + " = " + disponible);
-            double seuilCC = (f == Feve.F_HQ) ? 100.0 : 1200.0;
+            double seuilCC = (f == Feve.F_HQ) ? 10.0 : 100.0;
             if (disponible > seuilCC) {
-                double parStep = Math.max(100.0, disponible / 24.0);
+                // On propose une quantité réaliste pour ne pas effrayer l'acheteur (ex: max 500 T / step)
+                double parStep = Math.max(100.0, Math.min(disponible / 12.0, 500.0));
                 Echeancier e = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1, 12, parStep);
                 List<IAcheteurContratCadre> acheteurs = supCC.getAcheteurs(f);
                 if (!acheteurs.isEmpty()) {

@@ -41,10 +41,11 @@ public class Producteur2Bourse extends Sechage implements IVendeurBourse {
 
 	@Override
 	public double offre(Feve f, double cours) {
-		if (f.getGamme() == Gamme.HQ) {
+		// Seules les fèves équitables ne se vendent pas en bourse
+		if (f.isEquitable()) {
 			return 0.0;
 		}
-		this.setStockMin(0.1);
+		this.setStockMin(0.05); // Ne garder que 5% de marge de sécurité
 
 		double offre = 0;
 
@@ -53,7 +54,7 @@ public class Producteur2Bourse extends Sechage implements IVendeurBourse {
 			double stockActuel = this.stockvar.get(f).getValeur();
 			double quantiteAGarder = this.restantDu(f);
 
-			double marge = 1.01;
+			double marge = 1.1;
 
 			double prixMinimal = this.cout_unit_t.get(f) * marge;
 
