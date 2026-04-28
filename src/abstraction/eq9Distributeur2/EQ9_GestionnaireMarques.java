@@ -68,9 +68,9 @@ public class EQ9_GestionnaireMarques {
             0.10  // 10%
         ));
         
-        // EQ9 - Carrefour Sélection (NOTRE MARQUE PROPRE)
-        marques.put("CarrefourSelection", new MarqueTransformateur(
-            "Carrefour Sélection",
+        // EQ9 - NOTRE MARQUE PROPRE
+        marques.put("EQ9", new MarqueTransformateur(
+            "EQ9",
             "EQ9",
             0.25  // 25% - notre part du marché
         ));
@@ -92,7 +92,7 @@ public class EQ9_GestionnaireMarques {
         if (marques.containsKey(nomMarque)) {
             stockParMarque.put(nomMarque, quantiteKg);
         } else {
-            journal.ajouter("⚠️ Marque inconnue : " + nomMarque);
+            journal.ajouter("Marque inconnue : " + nomMarque);
         }
     }
     

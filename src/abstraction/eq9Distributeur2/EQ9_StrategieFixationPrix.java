@@ -153,7 +153,7 @@ public class EQ9_StrategieFixationPrix {
         double ratio = noPrix / prixConcurrent;
         
         if (ratio > 1.05) {
-            // Nous sommes 5% plus chers → réduire pour rester compétitif
+            // Nous sommes 5% plus chers : réduire pour rester compétitif
             return 0.98;  // -2%
         } else if (ratio > 1.02) {
             // Nous sommes 2% plus chers
