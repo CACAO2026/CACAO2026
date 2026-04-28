@@ -19,15 +19,15 @@ public class Transformateur2ProductionChocolat extends Transformateur2Fabriquant
         super.next();
 
         // 1. PAIEMENT DES EMPLOYÉS (Coût fixe) 
-        double coutSalaires = 3000 * 625.0;
+        double coutSalaires = 7150 * 625.0;
         
         // On demande à la banque de payer nos employés
         Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Salaires des employés", coutSalaires);
 
         // 2. OPTIMISATION DE LA PRODUCTION (Flux tendu)
-        double stockCibleHQ = 7500.0;
-        double stockCibleMQ = 10000.0;
-        double stockCibleBQ = 7500.0;
+        double stockCibleHQ = 20000.0;
+        double stockCibleMQ = 20000.0;
+        double stockCibleBQ = 20000.0;
 
         // On recrée nos références exactes pour lire les stocks
         ChocolatDeMarque chocoHQ = new ChocolatDeMarque(Chocolat.C_HQ, "Ferrara Rocher", 100);
@@ -40,7 +40,7 @@ public class Transformateur2ProductionChocolat extends Transformateur2Fabriquant
         double aProduireBQ = stockCibleBQ - this.getStock_chocolatDeMarque(chocoBQ);
 
         // Capacité de production de notre usine 
-        double capaciteRestante = 3000 * 8.4; 
+        double capaciteRestante = 7150 * 8.4; 
 
         // 3. On lance la production par ordre de priorité (le HQ rapporte le plus !)        
         if (aProduireHQ > 0 && capaciteRestante > 0) {
