@@ -66,10 +66,10 @@ public class Transformateur2VendeurAppelOffre extends Transformateur2AchatAppelO
 	public void notifierVenteAO(OffreVente propositionRetenue){
         ChocolatDeMarque cdm = (ChocolatDeMarque) propositionRetenue.getProduit();
         this.remove_chocolatDeMarque(cdm, propositionRetenue.getQuantiteT());
-        this.getJournaux().get(7).ajouter(propositionRetenue.toString()+ "\n");
+        this.getJournaux().get(8).ajouter(propositionRetenue.toString()+ "\n");
     }
 
 	public void notifierPropositionNonRetenueAO(OffreVente propositionRefusee){
-        this.getJournaux().get(7).ajouter(propositionRefusee.toString()+ "\n");
+        this.getJournaux().get(8).ajouter(propositionRefusee.toString()+ "\n");
     }
 }

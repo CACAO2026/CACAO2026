@@ -194,29 +194,39 @@ public class Transformateur2Stock extends Transformateur2Acteur{
             int etape = Filiere.LA_FILIERE.getEtape();
             while(!this.sacsHQ.isEmpty() && this.sacsHQ.get(0).getDatePeremption()==etape){
                 SacDeFeves sac=this.sacsHQ.remove(0);
+                this.stock_feve.put(Feve.F_HQ, this.stock_feve.get(Feve.F_HQ) - sac.getQuantite());
                 SacDeFeves newSac=new SacDeFeves(Feve.F_MQ, sac.getQuantite());
+                this.stock_feve.put(Feve.F_MQ, this.stock_feve.get(Feve.F_MQ) + sac.getQuantite());
                 this.sacsMQ.add(newSac);
             }
             while(!this.sacsHQ_E.isEmpty() && this.sacsHQ_E.get(0).getDatePeremption()==etape){
                 SacDeFeves sac=this.sacsHQ_E.remove(0);
+                this.stock_feve.put(Feve.F_HQ_E, this.stock_feve.get(Feve.F_HQ_E) - sac.getQuantite());
                 SacDeFeves newSac=new SacDeFeves(Feve.F_MQ_E, sac.getQuantite());
+                this.stock_feve.put(Feve.F_MQ_E, this.stock_feve.get(Feve.F_MQ_E) + sac.getQuantite());
                 this.sacsMQ_E.add(newSac);
             }
             while(!this.sacsMQ.isEmpty() && this.sacsMQ.get(0).getDatePeremption()==etape){
                 SacDeFeves sac=this.sacsMQ.remove(0);
+                this.stock_feve.put(Feve.F_MQ, this.stock_feve.get(Feve.F_MQ) - sac.getQuantite());
                 SacDeFeves newSac=new SacDeFeves(Feve.F_BQ, sac.getQuantite());
+                this.stock_feve.put(Feve.F_BQ, this.stock_feve.get(Feve.F_BQ) + sac.getQuantite());
                 this.sacsBQ.add(newSac);
             }
             while(!this.sacsMQ_E.isEmpty() && this.sacsMQ_E.get(0).getDatePeremption()==etape){
                 SacDeFeves sac=this.sacsMQ_E.remove(0);
+                this.stock_feve.put(Feve.F_MQ_E, this.stock_feve.get(Feve.F_MQ_E) - sac.getQuantite());
                 SacDeFeves newSac=new SacDeFeves(Feve.F_BQ_E, sac.getQuantite());
+                this.stock_feve.put(Feve.F_BQ_E, this.stock_feve.get(Feve.F_BQ_E) + sac.getQuantite());
                 this.sacsBQ_E.add(newSac);
             }
             while(!this.sacsBQ.isEmpty() && this.sacsBQ.get(0).getDatePeremption()==etape){
-                this.sacsBQ.remove(0);
+                SacDeFeves sac=this.sacsBQ.remove(0);
+                this.stock_feve.put(Feve.F_BQ, this.stock_feve.get(Feve.F_BQ) - sac.getQuantite());
             }
             while(!this.sacsBQ_E.isEmpty() && this.sacsBQ_E.get(0).getDatePeremption()==etape){
-                this.sacsBQ_E.remove(0);
+                SacDeFeves sac=this.sacsBQ_E.remove(0);
+                this.stock_feve.put(Feve.F_BQ_E, this.stock_feve.get(Feve.F_BQ_E) - sac.getQuantite());
             }
         }
 
