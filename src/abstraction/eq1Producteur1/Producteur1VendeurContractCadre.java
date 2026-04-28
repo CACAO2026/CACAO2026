@@ -22,6 +22,10 @@ public class Producteur1VendeurContractCadre extends Producteur1Cooperative impl
 	private List<ExemplaireContratCadre> contratsTermines;
 	protected Journal journalCC;
 	protected int periode = 8 ;
+	protected HashMap<Feve , Double > prixTonne = new HashMap<Feve , Double>();
+	protected HashMap<Feve , Double > prixMinTonne = new HashMap<Feve , Double>();
+
+
 
     public Producteur1VendeurContractCadre(){
         super();
@@ -34,6 +38,20 @@ public class Producteur1VendeurContractCadre extends Producteur1Cooperative impl
         this.pourcentageAVendre.put(Feve.F_MQ_E,0.);
         this.pourcentageAVendre.put(Feve.F_HQ,0.);
         this.pourcentageAVendre.put(Feve.F_HQ_E,0.);
+
+		this.prixTonne.put(Feve.F_BQ, 3250.);
+		this.prixTonne.put(Feve.F_BQ_E,3950.);
+        this.prixTonne.put(Feve.F_MQ,3950.);
+        this.prixTonne.put(Feve.F_MQ_E,4500.);
+        this.prixTonne.put(Feve.F_HQ,4500.);
+        this.prixTonne.put(Feve.F_HQ_E,5000.);
+
+		this.prixMinTonne.put(Feve.F_BQ, 2800.);
+		this.prixMinTonne.put(Feve.F_BQ_E,3300.);
+        this.prixMinTonne.put(Feve.F_MQ,3300.);
+        this.prixMinTonne.put(Feve.F_MQ_E,4000.);
+        this.prixMinTonne.put(Feve.F_HQ,4000.);
+        this.prixMinTonne.put(Feve.F_HQ_E,4000.);
 
     }
 
@@ -103,7 +121,8 @@ public class Producteur1VendeurContractCadre extends Producteur1Cooperative impl
 	 * @return La proposition initale du prix a la tonne.
 	 */
 	public double propositionPrix(ExemplaireContratCadre contrat){
-        return 10000;
+	
+        return this.prixTonne.get((Feve) contrat.getProduit());
     }
 
 	/**
@@ -117,6 +136,19 @@ public class Producteur1VendeurContractCadre extends Producteur1Cooperative impl
 	 * Sinon, retourne une contreproposition de prix.
 	 */
 	public double contrePropositionPrixVendeur(ExemplaireContratCadre contrat){
+		Feve f =(Feve) contrat.getProduit();
+
+		if(contrat.getPrix()< this.prixMinTonne.get(f)){
+			// on regarde si c'est 3 fois la même proposition en face
+			List<Echeancier> lastEcheanchiers = contrat.getEcheanciers();
+			Echeancier e = contrat.getEcheancier();
+			if(lastEcheanchiers.get(-2) == e && lastEcheanchiers.get(-4) == e){
+				return 0.;
+			}
+
+			return this.prixMinTonne.get(f);
+		}
+
         return contrat.getPrix();
     }
 
