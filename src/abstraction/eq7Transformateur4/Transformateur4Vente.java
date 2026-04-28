@@ -6,7 +6,7 @@ import abstraction.eqXRomu.contratsCadres.IVendeurContratCadre;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
 
-//Auteur -> Aymeric
+//Auteur -> Aymeric et Paul
 public class Transformateur4Vente extends Transformateur4Production implements IVendeurContratCadre {
 
     @Override
