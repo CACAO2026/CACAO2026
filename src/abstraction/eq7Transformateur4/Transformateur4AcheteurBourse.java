@@ -11,7 +11,6 @@ public class Transformateur4AcheteurBourse extends Transformateur4Acteur impleme
     //Auteur -> Aymeric
     @Override
     public double demande(Feve f, double cours) {  
-    System.out.println("--------------------------------"+f+" "+cours);
         if (f==Feve.F_BQ){
             return 200.;
         }

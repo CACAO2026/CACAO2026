@@ -21,16 +21,16 @@ public class Transformateur4Production extends Transformateur4Marques implements
         //Calcul qualité
         double quality=0.;
         if (gamme==Gamme.BQ){
-            quality=cacao_pourcentage + 3*0.45;
-            assert this.get_LQ().getValeur()>quantity*cacao_pourcentage;}
+            quality=cacao_pourcentage/100. + 3*0.45;
+            assert this.get_LQ().getValeur()>quantity*cacao_pourcentage/100.;}
         else{
             if (gamme==Gamme.MQ){
                 quality=cacao_pourcentage+ 3*0.75;
-                assert this.get_MQ().getValeur()>quantity*cacao_pourcentage;
+                assert this.get_MQ().getValeur()>quantity*cacao_pourcentage/100.;
             }
             else{
                 quality = cacao_pourcentage + 3*1;
-                assert this.get_HQ().getValeur()>quantity*cacao_pourcentage;
+                assert this.get_HQ().getValeur()>quantity*cacao_pourcentage/100.;
             }
         
         }
@@ -40,7 +40,7 @@ public class Transformateur4Production extends Transformateur4Marques implements
         double quantite_mp=(quantity*(1-cacao_pourcentage/100.));
         double prix_total_mp=quantite_mp*prix_MP;
         Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Achat des matières premières pour la production de chocolat", prix_total_mp);
-        this.get_Stock().remove(quantity*cacao_pourcentage, gamme);
+        this.get_Stock().remove(quantity*cacao_pourcentage/100., gamme);
         if (quality>3.575){
             this.get_StockChoco_HQ().ajouter(this,quantity);
         }

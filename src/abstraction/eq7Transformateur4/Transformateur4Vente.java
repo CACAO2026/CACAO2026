@@ -3,6 +3,7 @@ package abstraction.eq7Transformateur4;
 import abstraction.eqXRomu.contratsCadres.Echeancier;
 import abstraction.eqXRomu.contratsCadres.ExemplaireContratCadre;
 import abstraction.eqXRomu.contratsCadres.IVendeurContratCadre;
+import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
 
 //Auteur -> Aymeric
@@ -10,8 +11,7 @@ public class Transformateur4Vente extends Transformateur4Production implements I
 
     @Override
     public boolean vend(IProduit produit) {
-        // TODO Auto-generated method stub
-        return true;
+        return this.getChocolatsProduits().contains(produit);
     }
 
     @Override
