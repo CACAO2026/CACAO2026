@@ -2,6 +2,7 @@ package abstraction.eq3Producteur3;
 
 import java.util.HashMap;
 
+import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.produits.Gamme;
 
 /** @author Vassili Spiridonov*/
@@ -88,6 +89,28 @@ public class Agriculteurs3 {
         
         return cout;
     }
+
+    public double getCoutMainOeuvreFeve(Feve f){
+        double cout = 0;
+        Gamme g = f.getGamme();
+
+        int cdiGamme = nbCDI.getOrDefault(g, 0);
+        int interimGamme = nbInterim.getOrDefault(g, 0);
+        double pourcentageMax = this.pourcentagesEquitables.getOrDefault(g, 0.0);
+
+
+        if (f.isEquitable()){
+            int nbHautSalaire = (int) (cdiGamme * pourcentageMax);
+            cout += (nbHautSalaire * this.salaireCDIMax);
+        }
+        else{
+            int nbBasSalaire = (int) (cdiGamme * (1-pourcentageMax));
+            cout += (nbBasSalaire * this.salaireCDIMin);
+            cout += (interimGamme * this.salaireInterim);
+            cout += (this.nbEnfant * this.salaireEnfant);
+        }
+        return cout;
+    }   
     
 
     //Cette fonction décrit notre engagement éthique 
