@@ -64,12 +64,7 @@ public class Distributeur2Acteur implements IActeur, IDistributeurChocolatDeMarq
         this.prix = new HashMap<>();
         
         this.strategieFixationPrix = new EQ9_StrategieFixationPrix(journal);
-<<<<<<< HEAD
         
-=======
-        this.gestionnaireMarques = new EQ9_GestionnaireMarques(journal);
-        this.marqueDistributeurEQ9 = new MarqueDistributeurEQ9();
->>>>>>> 854fd50a260cf60df9f48b614bf35fd3c2196ab7
         
         this.indicateurMargeMoyenne = new Variable("EQ9_marge_moyenne", this, 18.0);
         this.indicateurMixMarquePrivee = new Variable("EQ9_pct_marque_privee", this, 40.0);
