@@ -90,7 +90,7 @@ public class Transformateur1VendeurCC extends Transformateur1AcheteurBourse impl
     SuperviseurVentesContratCadre sup =null;
     sup= (SuperviseurVentesContratCadre)(Filiere.LA_FILIERE.getActeur("Sup.CCadre"));
     List<IAcheteurContratCadre> acheteurs= sup.getAcheteurs(ProntellaM);
-    if (this.getStocksProduit(ProntellaM)>200 && this.getStocksPrevuProduit(ProntellaM)>200){
+    if (this.getStocksProduit(ProntellaM)>200 && this.getStocksPrevuProduit(ProntellaM)>200 && this.getStocksPrevuProduit(ProntellaM)<200000){
     Echeancier e= new Echeancier(Filiere.LA_FILIERE.getEtape()+1,2,(Double.min(this.getStocksProduit(ProntellaM),this.getStocksPrevuProduit(ProntellaM)))/2);
         if (!acheteurs.isEmpty()) {
         ExemplaireContratCadre contrat=sup.demandeVendeur(acheteurs.get(0), this, ProntellaM, e, cryptogramme, false);
