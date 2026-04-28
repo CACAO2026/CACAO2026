@@ -11,6 +11,14 @@ public class Transformateur4AcheteurBourse extends Transformateur4Acteur impleme
     //Auteur -> Aymeric
     @Override
     public double demande(Feve f, double cours) {  
+    System.out.println("--------------------------------"+f+" "+cours);
+        if (f==Feve.F_BQ){
+            return 200.;
+        }
+        else{
+            return 0.0;
+        }
+        /* 
         if (f.getGamme()==Gamme.MQ || f.getGamme()==Gamme.HQ || f.getGamme()==Gamme.BQ){
             BourseCacao bourse = (BourseCacao)(Filiere.LA_FILIERE.getActeur("BourseCacao"));
             double max = bourse.getCours(f).getMax();
@@ -25,7 +33,7 @@ public class Transformateur4AcheteurBourse extends Transformateur4Acteur impleme
         }
         else{
             return 0.0;
-        }
+        }*/
     }
     //Auteur -> Matteo
     @Override
@@ -43,6 +51,7 @@ public class Transformateur4AcheteurBourse extends Transformateur4Acteur impleme
         // Ajouter une entrée dans le journal pour notifier la blacklist
         this.getJournaux().get(0).ajouter("Nous avons été blacklistés pour " + dureeEnStep + " étapes.");
     }
+
     
 
 }

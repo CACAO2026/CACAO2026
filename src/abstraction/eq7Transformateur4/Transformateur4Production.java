@@ -15,6 +15,7 @@ public class Transformateur4Production extends Transformateur4Marques implements
     }
 
     public void production(double quantity, Gamme gamme, double cacao_pourcentage){
+        //quantity est en tonne
         //Verification
         assert cacao_pourcentage>0.45;
         //Calcul qualité
@@ -36,7 +37,7 @@ public class Transformateur4Production extends Transformateur4Marques implements
 
         //Achat de matières premières
         double prix_MP=1000;
-        double quantite_mp=(quantity*(1-cacao_pourcentage));
+        double quantite_mp=(quantity*(1-cacao_pourcentage/100.));
         double prix_total_mp=quantite_mp*prix_MP;
         Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Achat des matières premières pour la production de chocolat", prix_total_mp);
         this.get_Stock().remove(quantity*cacao_pourcentage, gamme);
@@ -51,10 +52,14 @@ public class Transformateur4Production extends Transformateur4Marques implements
                 this.get_StockChoco_BQ().ajouter(this,quantity);
             }
         }
-        
-
-        
     }
+
+    public void next(){
+        super.next();
+        this.production(150, Gamme.BQ, 45);
+    }
+        
+    
 
     public List<ChocolatDeMarque> getChocolatsProduits() {
         ChocolatDeMarque cacao_plus = new ChocolatDeMarque(Chocolat.C_BQ, "CACAO+", 45);
