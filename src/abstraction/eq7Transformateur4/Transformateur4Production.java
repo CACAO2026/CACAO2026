@@ -15,31 +15,32 @@ public class Transformateur4Production extends Transformateur4Marques implements
     }
 
     public void production(double quantity, Gamme gamme, double cacao_pourcentage){
+        //quantity est en tonne
         //Verification
         assert cacao_pourcentage>0.45;
         //Calcul qualité
         double quality=0.;
         if (gamme==Gamme.BQ){
-            quality=cacao_pourcentage + 3*0.45;
-            assert this.get_LQ().getValeur()>quantity*cacao_pourcentage;}
+            quality=cacao_pourcentage/100. + 3*0.45;
+            assert this.get_LQ().getValeur()>quantity*cacao_pourcentage/100.;}
         else{
             if (gamme==Gamme.MQ){
                 quality=cacao_pourcentage+ 3*0.75;
-                assert this.get_MQ().getValeur()>quantity*cacao_pourcentage;
+                assert this.get_MQ().getValeur()>quantity*cacao_pourcentage/100.;
             }
             else{
                 quality = cacao_pourcentage + 3*1;
-                assert this.get_HQ().getValeur()>quantity*cacao_pourcentage;
+                assert this.get_HQ().getValeur()>quantity*cacao_pourcentage/100.;
             }
         
         }
 
         //Achat de matières premières
         double prix_MP=1000;
-        double quantite_mp=(quantity*(1-cacao_pourcentage));
+        double quantite_mp=(quantity*(1-cacao_pourcentage/100.));
         double prix_total_mp=quantite_mp*prix_MP;
         Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Achat des matières premières pour la production de chocolat", prix_total_mp);
-        this.get_Stock().remove(quantity*cacao_pourcentage, gamme);
+        this.get_Stock().remove(quantity*cacao_pourcentage/100., gamme);
         if (quality>3.575){
             this.get_StockChoco_HQ().ajouter(this,quantity);
         }
@@ -51,10 +52,14 @@ public class Transformateur4Production extends Transformateur4Marques implements
                 this.get_StockChoco_BQ().ajouter(this,quantity);
             }
         }
-        
-
-        
     }
+
+    public void next(){
+        super.next();
+        this.production(150, Gamme.BQ, 45);
+    }
+        
+    
 
     public List<ChocolatDeMarque> getChocolatsProduits() {
         ChocolatDeMarque cacao_plus = new ChocolatDeMarque(Chocolat.C_BQ, "CACAO+", 45);
