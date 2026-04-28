@@ -43,8 +43,11 @@ public Transformateur1AcheteurCC() {
 
 
     public void notificationNouveauContratCadre(ExemplaireContratCadre contrat){
+        super.notificationNouveauContratCadre(contrat);
+        if (contrat.getAcheteur().equals(this)){
         double quantite= contrat.getQuantiteTotale();
         this.JournalAchatCC.ajouter("Nouveau contrat cadre de "+quantite+"T de " +contrat.getProduit()+" pour "+contrat.getPrix()+"€");
+        }
     }
 
 	public void receptionner(IProduit p, double quantiteEnTonnes, ExemplaireContratCadre contrat){
