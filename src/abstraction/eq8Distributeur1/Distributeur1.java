@@ -22,7 +22,7 @@ public class Distributeur1 extends MiseEnRayon {
 		List<ChocolatDeMarque> p=Filiere.LA_FILIERE.getChocolatsProduits();
 		Banque b=Filiere.LA_FILIERE.getBanque();
 		Variable v=this.getvolumestock();
-		double vr=this.getvolumerayon();
+		this.getvolumerayon();
 		double v1=v.getValeur();
 		double volumeCibleTotal = 3600000.0;
 

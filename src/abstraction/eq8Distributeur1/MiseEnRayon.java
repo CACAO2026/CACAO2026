@@ -70,9 +70,6 @@ public class MiseEnRayon extends AppelOffre {
             double aDeplacer = Math.min(quantiteEnStock, Math.min(resteAFermerGamme, placeRestanteMagasin));
 
             if (aDeplacer > 0) {
-                // Mise à jour du stock interne (this pointe vers l'instance de l'acteur via l'héritage)
-                this.Stock.put(cdm, quantiteEnStock - aDeplacer);
-                
                 // Ajout effectif en rayon (méthode de l'acteur qui met à jour volumerayon)
                 this.AjoutenRayon(cdm, aDeplacer);
                 
