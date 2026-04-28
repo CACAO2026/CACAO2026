@@ -14,6 +14,9 @@ import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
+import abstraction.eq9Distributeur2.EQ9_StrategieFixationPrix;
+import abstraction.eq9Distributeur2.EQ9_GestionnaireMarques;
+import abstraction.eq9Distributeur2.EQ9_MarquePrivee;
 
 public class Distributeur2Acteur implements IActeur, IDistributeurChocolatDeMarque {
 	protected int cryptogramme;
@@ -23,6 +26,15 @@ public class Distributeur2Acteur implements IActeur, IDistributeurChocolatDeMarq
 	protected Map<ChocolatDeMarque, Double> prixParProduit;
     protected Map<ChocolatDeMarque, Double> prix;
     protected double capaciteRayonKg = 500000.0;
+    
+    protected EQ9_StrategieFixationPrix strategieFixationPrix;
+    protected EQ9_GestionnaireMarques gestionnaireMarques;
+    protected EQ9_MarquePrivee marquePrivee;
+
+
+    protected Variable indicateurMargeMoyenne;
+    protected Variable indicateurMixMarquePrivee;
+    protected Variable indicateurProfitBrutEtape;
 
 	/**
      * @author Paul Juhel
@@ -54,6 +66,14 @@ public class Distributeur2Acteur implements IActeur, IDistributeurChocolatDeMarq
 
         // Initialisation des prix selon la qualité du chocolat
         this.prix = new HashMap<>();
+        
+        this.strategieFixationPrix = new EQ9_StrategieFixationPrix(journal);
+        this.gestionnaireMarques = new EQ9_GestionnaireMarques(journal);
+        this.marquePrivee = new EQ9_MarquePrivee(journal);
+        
+        this.indicateurMargeMoyenne = new Variable("EQ9_marge_moyenne", this, 18.0);
+        this.indicateurMixMarquePrivee = new Variable("EQ9_pct_marque_privee", this, 40.0);
+        this.indicateurProfitBrutEtape = new Variable("EQ9_profit_brut", this, 0.0);
 
         journal.ajouter("Initialisation terminée : " + produits.size() + " produits en stock");
     }
@@ -108,6 +128,9 @@ public class Distributeur2Acteur implements IActeur, IDistributeurChocolatDeMarq
 		
 		// Payer les frais de stockage
 		payerFraisStockage();
+		
+		//Ajustement dynamique prix
+		ajusterPrixDynamiques();
 	}
 		/** @author Anass Ouisrani*/
 	protected double getStockTotal() {
@@ -133,6 +156,9 @@ public class Distributeur2Acteur implements IActeur, IDistributeurChocolatDeMarq
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
 		res.add(indicateurStockTotal);
+		res.add(indicateurMargeMoyenne);
+		res.add(indicateurMixMarquePrivee);
+		res.add(indicateurProfitBrutEtape);
 		return res;
 	}
 
@@ -332,4 +358,82 @@ protected void payerFraisStockage() {
             + stockTotalEnTonnes + "t stockées");
     }
 }
+
+/**
+ * Ajuste dynamiquement les prix de chaque produit
+ * @author Paul ROSSIGNOL
+ */
+protected void ajusterPrixDynamiques() {
+    int etape = Filiere.LA_FILIERE.getEtape();
+    
+    List<ChocolatDeMarque> produits = Filiere.LA_FILIERE.getChocolatsProduits();
+    
+    if (produits != null && !produits.isEmpty()) {
+        double profitBrutTotal = 0;
+        double margeTotal = 0;
+        
+        for (ChocolatDeMarque choco : produits) {
+            // Obtenir infos produit
+            double coutAchat = obtenirCoutAchat(choco);
+            double stock = this.stock.getOrDefault(choco, 0.0);
+            double demande = estimerDemandeClients(choco);
+            double prixConcurrent = estimerPrixConcurrent(choco);
+            
+            // Calculer prix optimal
+            double prixOptimal = strategieFixationPrix.calculerPrixVente(
+                coutAchat,
+                choco.getNom(),
+                stock,
+                demande,
+                prixConcurrent
+            );
+            
+            // Mettre à jour prix
+            this.prix.put(choco, prixOptimal);
+            
+            // Accumuler profit brut et marge
+            if (stock > 0) {
+                profitBrutTotal += (prixOptimal - coutAchat) * (stock / 1000.0);
+                margeTotal += ((prixOptimal - coutAchat) / coutAchat) * 100;
+            }
+        }
+        
+        // Mettre à jour indicateurs
+        this.indicateurProfitBrutEtape.setValeur(this, profitBrutTotal);
+        if (!produits.isEmpty()) {
+            this.indicateurMargeMoyenne.setValeur(this, margeTotal / produits.size());
+        }
+    }
 }
+
+/**
+ * Obtient le coût d'achat pour un produit (estimation)
+ */
+private double obtenirCoutAchat(ChocolatDeMarque produit) {
+    // Si c'est notre marque propre
+    if (marquePrivee.estMarquePrivee(produit.getNom())) {
+        return EQ9_MarquePrivee.COÛT_ACHAT_EURO_PAR_TONNE;
+    }
+    
+    // Sinon : estimation moyenne pour revendication
+    return 150.0;
+}
+
+/**
+ * Estime la demande clients pour un produit (placeholder)
+ */
+private double estimerDemandeClients(ChocolatDeMarque produit) {
+    // TODO : implémenter à partir historique ventes/Filière
+    return 50000.0;  // Estimation : 50T/étape
+}
+
+/**
+ * Estime le prix concurrent direct (placeholder)
+ */
+private double estimerPrixConcurrent(ChocolatDeMarque produit) {
+    // TODO : implémenter en scrappant info transformateurs
+    return 0;  // 0 = pas de concurrent identifié
+}
+}
+
+
