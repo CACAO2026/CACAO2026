@@ -40,9 +40,11 @@ public class Transformateur4AcheteurBourse extends Transformateur4Acteur impleme
     public void notificationAchat(Feve f, double quantiteEnT, double coursEnEuroParT) {
         if (f.isEquitable()){
             this.get_EqStock().add(quantiteEnT, f.getGamme());
+            this.journal_achat_bourse.ajouter("Achat de " + String.valueOf(quantiteEnT) + " tonnes de fèves " + f);
         }
         else{
             this.get_Stock().add(quantiteEnT, f.getGamme());
+            this.journal_achat_bourse.ajouter("Achat de " + String.valueOf(quantiteEnT) + " tonnes de fèves " + f);
         }
     }
     //Auteur -> Matteo

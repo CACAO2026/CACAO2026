@@ -9,7 +9,6 @@ import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.filiere.IFabricantChocolatDeMarque;
 //Auteur : Matteo
 public class Transformateur4Production extends Transformateur4Marques implements IFabricantChocolatDeMarque{
-
     public Transformateur4Production(){
         super();
     }
@@ -45,13 +44,16 @@ public class Transformateur4Production extends Transformateur4Marques implements
           this.get_Stock().remove(quantity*cacao_pourcentage/100., gamme);
         if (quality>3.575){
             this.get_StockChoco_HQ().ajouter(this,quantity);
+            this.journal_production.ajouter("Production de " + String.valueOf(quantity) + " tonnes de chocolat de qualité " + String.valueOf(quality));
         }
         else{
             if (quality>2.58){
                 this.get_StockChoco_MQ().ajouter(this,quantity);
+                this.journal_production.ajouter("Production de " + String.valueOf(quantity) + " tonnes de chocolat de qualité " + String.valueOf(quality));
             }
             else {
                 this.get_StockChoco_BQ().ajouter(this,quantity);
+                this.journal_production.ajouter("Production de " + String.valueOf(quantity) + " tonnes de chocolat de qualité " + String.valueOf(quality));
             }
         }
     }
