@@ -15,6 +15,7 @@ public class Plantation {
     private double prix_vente; // Prix de vente de la plantation
     private double prix_replantation; // Prix de replantation de la plantation
     private double salaire_employe; // Prix que coûtent les employés par step par parcelle
+    private double salaire_employe_initial; // Salaire initial des employés (pour calcul augmentations)
     private double cout_cooperative = 10000; // Prix que coûtent les infrastructures communes à la coopérative par step
     private double stock_max; // Stock maximum de fèves avant de ne pas replanter
     private boolean replante = false;
@@ -45,6 +46,7 @@ public class Plantation {
                 this.prix_vente = 1200;
                 this.prix_replantation = 1000; // 1 euro par plant
                 this.salaire_employe = 30; // RÉDUIT pour la rentabilité
+                this.salaire_employe_initial = 30;
                 this.stock_max = 200000; // Autorise la replantation jusqu'à 100,000 tonnes de stock
                 break;
 
@@ -56,6 +58,7 @@ public class Plantation {
                 this.prix_vente = 1500;
                 this.prix_replantation = 1500; // 1.5 euro par plant
                 this.salaire_employe = 30; // RÉDUIT pour la rentabilité
+                this.salaire_employe_initial = 30;
                 this.stock_max = 150000;
                 break;
 
@@ -67,6 +70,7 @@ public class Plantation {
                 this.prix_vente = 1800;
                 this.prix_replantation = 1750; // 1.75 euro par plant
                 this.salaire_employe = 30; // RÉDUIT pour la rentabilité
+                this.salaire_employe_initial = 30;
                 this.stock_max = 200000;
                 break;
 
@@ -78,6 +82,7 @@ public class Plantation {
                 this.prix_vente = 1800;
                 this.prix_replantation = 2000; // 2 euro par plant
                 this.salaire_employe = 60; // RÉDUIT pour la rentabilité
+                this.salaire_employe_initial = 60;
                 this.stock_max = 100000;
                 break;
 
@@ -89,6 +94,7 @@ public class Plantation {
                 this.prix_vente = 1500;
                 this.prix_replantation = 1750;
                 this.salaire_employe = 60;
+                this.salaire_employe_initial = 60;
                 this.stock_max = 75000;
                 break;
 
@@ -100,6 +106,7 @@ public class Plantation {
                 this.prix_vente = 1200;
                 this.prix_replantation = 1250;
                 this.salaire_employe = 60;
+                this.salaire_employe_initial = 60;
                 this.stock_max = 100000;
                 break;
 
@@ -397,6 +404,47 @@ public class Plantation {
 
     public void setStock_max(double stock_max) {
         this.stock_max = stock_max;
+    }
+
+    /**
+     * Fait évoluer le salaire des employés en fonction du solde.
+     * Augmentation de 5% par million d'euros supplémentaires à partir de 10 millions.
+     * 
+     * @param solde Le solde actuel de l'entreprise
+     * @return Le nouveau salaire calculé
+     */
+    public double calculerAugmentationSalaire(double solde) {
+        final double SOLDE_DE_REFERENCE = 10_000_000_000.0; // 10 millions €
+        final double PALIER_AUGMENTATION = 1_000_000_000.0; // 1 million €
+        final double TAUX_AUGMENTATION = 0.05; // 5% d'augmentation par palier
+
+        // Calculer le surplus par rapport à 10 millions
+        double surplus = solde - SOLDE_DE_REFERENCE;
+
+        // Si le solde est inférieur à 10 millions, pas d'augmentation
+        if (surplus <= 0) {
+            this.salaire_employe = this.salaire_employe_initial;
+            return this.salaire_employe;
+        }
+
+        // Calculer le nombre de paliers complétés (1 palier = 1 million €)
+        int nombrePaliers = (int) Math.floor(surplus / PALIER_AUGMENTATION);
+
+        // Calculer le multiplicateur avec augmentation de 5% par palier
+        double multiplicateur = Math.pow(1 + TAUX_AUGMENTATION, nombrePaliers);
+
+        // Appliquer l'augmentation au salaire initial
+        this.salaire_employe = this.salaire_employe_initial * multiplicateur;
+
+        return this.salaire_employe;
+    }
+
+    public double getSalaireInitial() {
+        return this.salaire_employe_initial;
+    }
+
+    public double getSalaireEmploye() {
+        return this.salaire_employe;
     }
 
     public int getEtapeMort() {
