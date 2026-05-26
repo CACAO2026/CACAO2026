@@ -67,7 +67,7 @@ public class Transformateur4Production extends Transformateur4Marques implements
         if (Filiere.LA_FILIERE.getEtape()>0 && this.StockChoco_BQ.getValeur()<1000000){
             quantity = get_LQ().getValeur()*2.2222;
         }
-        else if (this.StockChoco_BQ.getValeur()>500000){
+        else if (this.StockChoco_BQ.getValeur()>5000000){
             quantity = 0.;
         }
         else{
