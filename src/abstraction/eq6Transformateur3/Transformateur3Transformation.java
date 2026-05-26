@@ -332,15 +332,14 @@ public class Transformateur3Transformation extends Transformateur3Acteur{
             this.stockChocolat.ajouterQuantite(chocolatProduit, quantiteChocolatProduite);
         }
 
-    // Coût calculé à partir des fèves utilisées et du chocolat produit
-       double cout = coutTransformation(quantiteChocolatProduite);
-
+       double cout= coutTransformation(quantiteChocolatProduite); 
        this.journaltransfo.ajouter("Transformation de " + quantiteFevesUtilisee + " T de " + feve
                + " en " + quantiteChocolatProduite + " T de " + chocolatProduit
                + " | % cacao = " + pourcentageCacao
                + " | qualité perçue = " + qualitePercue
                + " | péremption = " + dureePeremption(pourcentageCacao) + " mois"
                + " | coût estimé = " + cout + " €");
+
        return chocolatProduit;
 
 }
