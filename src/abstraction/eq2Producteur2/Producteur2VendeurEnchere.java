@@ -60,7 +60,7 @@ public class Producteur2VendeurEnchere extends Producteur2VendeurAO implements I
                 if (aVendre >= MiseAuxEncheres.QUANTITE_MIN) {
                     double maxVente = 2000.0;
                     if (stockActuel > 100000.0) {
-                        maxVente = stockActuel - 100000.0;
+                        maxVente = Math.max(2000.0, stockActuel - 100000.0);
                     }
                     double quantiteAVendre = Math.min(aVendre, maxVente);
 
