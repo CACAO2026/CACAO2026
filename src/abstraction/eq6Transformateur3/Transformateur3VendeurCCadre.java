@@ -179,6 +179,8 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
                         + contrat.getPrix()
                         + " €/T");
         }
+        
+
     }
 
     /* ===================================================== */
