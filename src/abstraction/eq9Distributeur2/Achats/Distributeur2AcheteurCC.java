@@ -328,7 +328,7 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
         if (produitsFiliere == null || produitsFiliere.isEmpty()) {
             return;
         }
-
+        
         for (ChocolatDeMarque choco : produitsFiliere) {
             if (!gs.doitAcheter(choco)) continue;
             if (!gs.prefererCC(choco)) continue;

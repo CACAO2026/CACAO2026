@@ -18,10 +18,10 @@ public class EQ9Config {
 
 
 // Stocks et seuils (en tonnes)
-public static final double SEUIL_MIN_T = 50.0;           // Déclencheur achat (plus bas)
-public static final double STOCK_CIBLE_T = 500.0;        // Objectif raisonnable (au lieu de 30000)
-public static final double SEUIL_SOUS_STOCK_T = 100.0;   // Tension
-public static final double SEUIL_SURSTOCK_T = 1000.0;    // Surstock (au lieu de 60000)
+public static final double SEUIL_MIN_T = 2000.0;
+public static final double STOCK_CIBLE_T = 8000.0;
+public static final double SEUIL_SOUS_STOCK_T = 100.0;
+public static final double SEUIL_SURSTOCK_T = 1000.0;
 
 // Contrats Cadres
 public static final double CC_QUANTITE_MIN_T = 100.0;   // Minimum légal pour un CC
