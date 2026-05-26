@@ -89,8 +89,7 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
             return contrat.getEcheancier();
 
-        } else {
-
+        } else if (stockDisponible > 100.0){
             this.journalCCVente.ajouter(
                     "Refus échéancier contrat "
                     + contrat.getNumero()
@@ -98,6 +97,9 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
                     + stockDisponible
                     + " T disponibles)");
 
+            return new Echeancier(contrat.getEcheancier().getStepDebut(),contrat.getEcheancier().getNbEcheances(), stockDisponible / (contrat.getEcheancier().getNbEcheances()));
+
+        } else {
             return null;
         }
     }
