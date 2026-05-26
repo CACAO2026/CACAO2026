@@ -83,7 +83,7 @@ public class Transformateur3VendeurAppelDOffre extends Transformateur3VendeurAux
 			}
 			return new OffreVente(offre, this, cm, px);
 		} else {
-			return new OffreVente(offre, this, cm, prixMoyen(cm)*1.05);
+			return new OffreVente(offre, this, cm, prixMoyen(cm)*0.98);
 		}
 //		return null;
 	}

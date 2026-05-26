@@ -133,19 +133,10 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
     public double contrePropositionPrixVendeur(ExemplaireContratCadre contrat) {
 
-        double prixInitial = contrat.getListePrix().get(0);
+        double monDernierPrix = contrat.getListePrix().get(Math.max(0, contrat.getListePrix().size()-2));
         double prixActuel = contrat.getPrix();
 
-        double prix;
-
-        if (prixActuel >= 0.95 * prixInitial) {
-
-            prix = prixActuel;
-
-        } else {
-
-            prix = 0.98 * prixInitial;
-        }
+        double prix = Math.max((prixActuel + monDernierPrix) / 2, monDernierPrix * 0.80);
 
         this.journalCCVente.ajouter(
                 "Contre-proposition prix vendeur contrat "
@@ -252,7 +243,7 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
                 (SuperviseurVentesContratCadre)
                 (Filiere.LA_FILIERE.getActeur("Sup.CCadre"));
 
-        List<IAcheteurContratCadre> acheteurs =
+        List<IAcheteurContratCadre> acheteursLambo =
                 sup.getAcheteurs(LamborghiniduCacao);
 
         /* ========================= */
@@ -268,9 +259,9 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
         double stockLibreLambo =
                 stockLambo - engagementLambo;
 
-        if (stockLibreLambo > 500 && !acheteurs.isEmpty()) {
+        if (stockLibreLambo > 500 && !acheteursLambo.isEmpty()) {
 
-            IAcheteurContratCadre acheteur = acheteurs.get(Filiere.random.nextInt(acheteurs.size()));
+            IAcheteurContratCadre acheteur = acheteursLambo.get(Filiere.random.nextInt(acheteursLambo.size()));
 
             if (acheteur instanceof IDistributeurChocolatDeMarque) {
 
@@ -283,7 +274,7 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
                                 quantite / 4);
 
                 this.journalCCVente.ajouter("   " + LamborghiniduCacao + " suffisamment en stock libre pour passer un CC");
-                this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteurs.size() + " acheteurs potentiels");
+                this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteursLambo.size() + " acheteurs potentiels");
                 ExemplaireContratCadre contrat = sup.demandeVendeur(acheteur, this, LamborghiniduCacao, e, cryptogramme, false);
 
                 if (contrat == null) {
@@ -292,14 +283,6 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
                 else {
                     this.journalCCVente.ajouter(Color.GREEN, acheteur.getColor(), "   contrat signe");
                 }
-
-                sup.demandeVendeur(
-                        acheteur,
-                        this,
-                        LamborghiniduCacao,
-                        e,
-                        cryptogramme,
-                        false);
             }
         }
 
@@ -307,15 +290,17 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
         /*        CHOCOENBIEN        */
         /* ========================= */
 
+        List<IAcheteurContratCadre> acheteursChoco = sup.getAcheteurs(Chocoenbien);
+
         double stockChoco = this.getStockProduit(Chocoenbien);
 
         double engagementChoco = totalEngagement(Chocoenbien);
 
         double stockLibreChoco = stockChoco - engagementChoco;
 
-        if (stockLibreChoco > 800 && !acheteurs.isEmpty()) {
+        if (stockLibreChoco > 800 && !acheteursChoco.isEmpty()) {
 
-            IAcheteurContratCadre acheteur = acheteurs.get(Filiere.random.nextInt(acheteurs.size()));
+            IAcheteurContratCadre acheteur = acheteursChoco.get(Filiere.random.nextInt(acheteursChoco.size()));
 
             if (acheteur instanceof IDistributeurChocolatDeMarque) {
 
@@ -326,7 +311,7 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
                                 quantite / 4);
 
                 this.journalCCVente.ajouter("   " + Chocoenbien + " suffisamment en stock libre pour passer un CC");
-                this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteurs.size() + " acheteurs potentiels");
+                this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteursChoco.size() + " acheteurs potentiels");
 
                 ExemplaireContratCadre contrat = sup.demandeVendeur(acheteur, this, Chocoenbien, e, cryptogramme, false);
                 
@@ -336,14 +321,6 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
                 else {
                     this.journalCCVente.ajouter(Color.GREEN, acheteur.getColor(), "   contrat signe");
                 }
-
-                sup.demandeVendeur(
-                        acheteur,
-                        this,
-                        Chocoenbien,
-                        e,
-                        cryptogramme,
-                        false);
             }
         }
 
