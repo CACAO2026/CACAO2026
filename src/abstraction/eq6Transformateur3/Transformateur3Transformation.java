@@ -71,7 +71,7 @@ public class Transformateur3Transformation extends Transformateur3Acteur{
     private static final double IMPACT_MARQUE_QUALITE_PERCUE = 0.3;
     private static final double IMPACT_CACAO_QUALITE_PERCUE = 0.3;
 
-    private static final double prixStockageTonne=20;
+    private static final double prixStockageTonne=7.5*4;
 
     protected Journal journaltransfo;
 
