@@ -15,6 +15,9 @@ public class EQ9_Pricing {
     /**
      * @author 
      */
+   /**
+     * Calcule le prix de vente en étant agressif sur le marché
+     */
     public double calculerPrix(
             ChocolatDeMarque choco,
             double coutAchat,
@@ -25,22 +28,19 @@ public class EQ9_Pricing {
             double partMarche,
             double cash) {
 
-        double margeGamme = margeSelonGamme(choco);
+
+        double margeGamme = margeSelonGamme(choco) * 0.7; // On réduit la marge de 30% pour être agressif
         double prix = coutAchat * (1.0 + margeGamme);
 
-        prix *= facteurDemande(demande, stockT);
-        prix *= facteurStock(dos);
-        prix = stratConcu.ajusterSelonConcurrence(prix, prixConcurrent);
-        prix *= facteurEntreprise(partMarche);
-        prix *= facteurEQ9(stockT, cash);
 
-        double prixPlancher = coutAchat * 1.05 + EQ9Config.FRAIS_STOCKAGE_EUR_PAR_T;
-    
-        if (prix < prixPlancher) {
-            prix = prixPlancher;
-    }
+        if (prixConcurrent > 0) {
+            
+            prix = Math.min(prix, prixConcurrent * 0.98);
+        }
 
-        return prix;
+        double prixPlancher = (coutAchat * 1.05) + EQ9Config.FRAIS_STOCKAGE_EUR_PAR_T;
+        
+        return Math.max(prix, prixPlancher);
     }
 
     //  MARGES PAR GAMME

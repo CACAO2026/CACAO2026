@@ -70,22 +70,20 @@ public Distributeur2AcheteurAO(){
             double stockCible = EQ9Config.STOCK_CIBLE_T;
 
             double quantiteAO = 0.0;
-
-            if (stockProjete < seuilMin) {
-                quantiteAO = stockCible - stockProjete;
-                this.journalAO.ajouter("Stock CRITIQUE " + choco.getNom()
-                    + " (" + stockActuel + "t actuel, " + stockProjete + "t projeté, en cours CC=" + enCoursCC + "t)"
-                    + ": réappro massif (objectif " + stockCible + "t)");
-            } else if (stockProjete < stockCible) {
-                // Stock bas → réappro agressif (plus que 50%)
-                quantiteAO = (stockCible - stockProjete) * 0.7;
-                this.journalAO.ajouter("Stock bas " + choco.getNom()
-                    + " (" + stockActuel + "t actuel, " + stockProjete + "t projeté)"
-                    + ": réappro partiel");
-            } else {
-                // Stock suffisant : pas d'AO
-                continue;
+            if (stockProjete >= stockCible) {
+                continue; 
             }
+            if (stockProjete < seuilMin) {
+    
+    quantiteAO = seuilMin - stockProjete;
+    this.journalAO.ajouter("Stock CRITIQUE pour " + choco.getNom() + " : achat AO de secours de " + quantiteAO + "t");
+} else if (stockProjete < stockCible) {
+    
+    quantiteAO = (stockCible - stockProjete) * 0.2; 
+    this.journalAO.ajouter("Stock bas pour " + choco.getNom() + " : petit achat AO de " + quantiteAO + "t");
+} else {
+    continue;
+}
 
             // Respecter la quantité minimum des AO
             double qMinAO = Math.max(AppelDOffre.AO_QUANTITE_MIN, EQ9Config.MIN_ACHAT_AO_T);

@@ -1,8 +1,8 @@
 package abstraction.eq9Distributeur2.Stocks;
 
+import abstraction.eq9Distributeur2.Config.EQ9Config;
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
-import abstraction.eq9Distributeur2.Config.EQ9Config;
 import java.util.Map;
 
 
@@ -71,14 +71,15 @@ public class EQ9_GestionStocks {
         return Math.max(0.0, cibleDynamique - sp);
     }
 
-    // CC si on a du temps (stock > 0.5 NEXT)
     public boolean prefererCC(ChocolatDeMarque choco) {
-        return DOS(choco) > 0.5;
+        // Le Contrat Cadre est notre mode d'approvisionnement principal. 
+        // On le préfère TOUJOURS, même si on est dans l'urgence.
+        return true; 
     }
 
-    // AO si besoin rapide
     public boolean prefererAO(ChocolatDeMarque choco) {
-        return DOS(choco) < 0.5;
+        // L'AO vient en "secours" si le stock est bas (< 20 jours)
+        return DOS(choco) < 20; 
     }
 
 
