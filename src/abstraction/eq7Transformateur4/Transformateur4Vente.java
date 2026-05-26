@@ -48,7 +48,7 @@ public class Transformateur4Vente extends Transformateur4Production implements I
         this.journal_negociation_CC.ajouter("[Prix acheteur] Proposition de Contrat avec négociation du prix " + contrat.getPrix());
         if (Double.isNaN(contrat.getPrix())){
             this.journal_negociation_CC.ajouter("[Prix vendeur] Proposition de Contrat avec "+ contrat.getAcheteur() + ", négociation du prix " + this.cout_prod.getValeur()*3);
-            return this.cout_prod.getValeur()*4;
+            return this.cout_prod.getValeur()*3;
         }
         else if (contrat.getPrix()<this.cout_prod.getValeur()){
             this.journal_negociation_CC.ajouter("[Prix vendeur] Proposition de Contrat avec "+ contrat.getAcheteur() + ", négociation du prix " + contrat.getPrix()*3);
@@ -66,11 +66,19 @@ public class Transformateur4Vente extends Transformateur4Production implements I
         if (contrat.getProduit() instanceof ChocolatDeMarque){
         this.journal_negociation_CC.ajouter("[Prix acheteur] Proposition de Contrat avec "+ contrat.getAcheteur() + ", négociation du prix " + contrat.getPrix());
         if (contrat.getPrix()<this.cout_prod.getValeur()){
-            this.journal_negociation_CC.ajouter("[Prix vendeur] Proposition de Contrat avec "+ contrat.getAcheteur() + ", négociation du prix " + contrat.getPrix()*2);
+            this.journal_negociation_CC.ajouter("[Prix vendeur] Proposition de Contrat avec "+ contrat.getAcheteur() + ", négociation du prix " + contrat.getPrix()*3);
             return contrat.getPrix()*3;}
         else {
-            return 0.;}
+        if (contrat.getPrix()>this.cout_prod.getValeur()*3){
+            this.journal_negociation_CC.ajouter("[Prix vendeur] Proposition de Contrat avec "+ contrat.getAcheteur() + ", négociation du prix " + contrat.getPrix());
+            return contrat.getPrix();
         }
+        else {if (contrat.getPrix()>this.cout_prod.getValeur()*1.5){
+            this.journal_negociation_CC.ajouter("[Prix vendeur] Proposition de Contrat avec "+ contrat.getAcheteur() + ", négociation du prix " + contrat.getPrix()*1.5);
+            return contrat.getPrix()*1.5;}
+        else{
+            return 0.;}
+        }}}
         else {
             return 0.;
         }

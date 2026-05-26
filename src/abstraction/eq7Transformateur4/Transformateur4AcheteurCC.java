@@ -9,6 +9,7 @@ import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.produits.Gamme;
 import abstraction.eqXRomu.produits.IProduit;
+//Auteur Matteo
 
 public class Transformateur4AcheteurCC extends Transformateur4AcheteurBourse implements IAcheteurContratCadre{
 
@@ -91,7 +92,7 @@ public class Transformateur4AcheteurCC extends Transformateur4AcheteurBourse imp
 
         this.journal_CC_achat.ajouter("[NEGOCIATIONS]");
         this.journal_CC_achat.ajouter("[PROPOSITION VENDEUR] Proposition de " + contrat.getVendeur() + " pour un prix unitaire de " + String.format("%.2f", prixUnitaire) + " €/t et une quantitée totale de " + quantiteTotale);
-        this.journal_CC_achat.ajouter("[COUR BOURSE] " + String.format("%.2f", prixBourse));
+        this.journal_CC_achat.ajouter("[COUR BOURSE] " + prixBourse);
 
         if (prixUnitaire > budgetMaxUnitaire) {
             this.journal_CC_achat.ajouter("[REJET] Prix unitaire non-finançable : " + prixUnitaire + " > budget unitaire " + String.format("%.2f", budgetMaxUnitaire));
