@@ -61,7 +61,10 @@ public class Producteur2Bourse extends Sechage implements IVendeurBourse {
 
 			int ageMax = this.getAgeAnciennete(f);
 
-			if (stockTotalGlobal > 400000.0) {
+			if (stockActuel > 100000.0) {
+				marge = 0.50; // LIQUIDATION: on brade pour écouler l'excédent avant destruction
+				this.journalBourse.ajouter("⚠️ LIQUIDATION pour " + f + " (Stock > 100k T). Marge baissée à 0.50");
+			} else if (stockTotalGlobal > 400000.0) {
 				marge = 0.90; // PANIC SELL: l'entrepôt déborde, on vend à -10% pour écouler et éviter le
 								// stopRecolte !
 				this.journalBourse.ajouter("⚠️ PANIC SELL ACTIVÉ pour " + f + " (Stock Global = " + stockTotalGlobal

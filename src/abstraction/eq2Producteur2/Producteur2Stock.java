@@ -54,9 +54,22 @@ public class Producteur2Stock {
 
     public void next() {
         gererPeremption();
+        gererExcedentStock();
         setStockMin(0.1);
         TaxeStockage();
         setTotalStock();
+    }
+
+    public void gererExcedentStock() {
+        double limiteParFeve = 100000.0; // Limite de sécurité par type de fève
+        for (Feve f : Feve.values()) {
+            Variable stockVarFeve = this.stockvar.get(f);
+            if (stockVarFeve != null && stockVarFeve.getValeur() > limiteParFeve) {
+                double aJeter = stockVarFeve.getValeur() - limiteParFeve;
+                this.retirerDuStock(f, aJeter);
+                this.journalStock.ajouter(Filiere.LA_FILIERE.getEtape() + " : EXCÉDENT - Destruction de " + aJeter + " T de " + f + " pour limiter les frais de stockage.");
+            }
+        }
     }
 
     public void gererPeremption() {
