@@ -421,13 +421,13 @@ public class Plantation {
         // Calculer le surplus par rapport à 10 millions
         double surplus = solde - SOLDE_DE_REFERENCE;
 
-        // Si le solde est inférieur à 10 millions, pas d'augmentation
+        // Si le solde est inférieur à 10 milliards, pas d'augmentation
         if (surplus <= 0) {
             this.salaire_employe = this.salaire_employe_initial;
             return this.salaire_employe;
         }
 
-        // Calculer le nombre de paliers complétés (1 palier = 1 million €)
+        // Calculer le nombre de paliers complétés (1 palier = 1 milliard €)
         int nombrePaliers = (int) Math.floor(surplus / PALIER_AUGMENTATION);
 
         // Calculer le multiplicateur avec augmentation de 5% par palier
