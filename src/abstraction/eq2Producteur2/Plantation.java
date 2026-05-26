@@ -414,8 +414,8 @@ public class Plantation {
      * @return Le nouveau salaire calculé
      */
     public double calculerAugmentationSalaire(double solde) {
-        final double SOLDE_DE_REFERENCE = 10_000_000_000.0; // 10 millions €
-        final double PALIER_AUGMENTATION = 1_000_000_000.0; // 1 million €
+        final double SOLDE_DE_REFERENCE = 10_000_000_000.0; // 10 milliards €
+        final double PALIER_AUGMENTATION = 1_000_000_000.0; // 1 milliard €
         final double TAUX_AUGMENTATION = 0.05; // 5% d'augmentation par palier
 
         // Calculer le surplus par rapport à 10 millions
