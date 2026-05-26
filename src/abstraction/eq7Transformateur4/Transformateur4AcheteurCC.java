@@ -41,7 +41,7 @@ public class Transformateur4AcheteurCC extends Transformateur4AcheteurBourse imp
             return null;
         }
         double stockChoco = this.get_StockChoco_BQ().getValeur() + this.get_StockChoco_MQ().getValeur() + this.get_StockChoco_HQ().getValeur();
-        double seuilStockChoco = 500000.0;
+        double seuilStockChoco = 300000.0;
         if (stockChoco >= seuilStockChoco) {
             this.journal_CC_achat.ajouter("[REJET] Stock de chocolat trop élevé (" + String.format("%.0f", stockChoco) + "t), pas besoin d'acheter des fèves");
             return null;
