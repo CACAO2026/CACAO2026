@@ -341,8 +341,6 @@ public class Transformateur3Transformation extends Transformateur3Acteur{
                + " | qualité perçue = " + qualitePercue
                + " | péremption = " + dureePeremption(pourcentageCacao) + " mois"
                + " | coût estimé = " + cout + " €");
-        Filiere.LA_FILIERE.getBanque().payerCout(this, this.cryptogramme,"couts totaux", cout);
-
        return chocolatProduit;
 
 }
