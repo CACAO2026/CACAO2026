@@ -4,10 +4,13 @@ import abstraction.eqXRomu.bourseCacao.BourseCacao;
 import abstraction.eqXRomu.contratsCadres.Echeancier;
 import abstraction.eqXRomu.contratsCadres.ExemplaireContratCadre;
 import abstraction.eqXRomu.contratsCadres.IAcheteurContratCadre;
+import abstraction.eqXRomu.contratsCadres.IVendeurContratCadre;
 import abstraction.eqXRomu.filiere.Filiere;
+import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.produits.Gamme;
 import abstraction.eqXRomu.produits.IProduit;
+//Auteur Matteo
 
 public class Transformateur4AcheteurCC extends Transformateur4AcheteurBourse implements IAcheteurContratCadre{
 
@@ -90,7 +93,9 @@ public class Transformateur4AcheteurCC extends Transformateur4AcheteurBourse imp
 
         this.journal_CC_achat.ajouter("[NEGOCIATIONS]");
         this.journal_CC_achat.ajouter("[PROPOSITION VENDEUR] Proposition de " + contrat.getVendeur() + " pour un prix unitaire de " + String.format("%.2f", prixUnitaire) + " €/t et une quantitée totale de " + quantiteTotale);
-        this.journal_CC_achat.ajouter("[COUR BOURSE] " + String.format("%.2f", prixBourse));
+        this.journal_CC_achat.ajouter("[COUR BOURSE] " + prixBourse);
+
+
 
         if (prixUnitaire > budgetMaxUnitaire) {
             this.journal_CC_achat.ajouter("[REJET] Prix unitaire non-finançable : " + prixUnitaire + " > budget unitaire " + String.format("%.2f", budgetMaxUnitaire));
@@ -112,10 +117,9 @@ public class Transformateur4AcheteurCC extends Transformateur4AcheteurBourse imp
         return prixUnitaire;
     }
 
-    @Override
     public void notificationNouveauContratCadre(ExemplaireContratCadre contrat) {
-        if (contrat.getVendeur().equals(this)){
-           this.journal_vente_CC.ajouter("[CONTRAT ACCEPTE] Contrat accepté avec " + contrat.getAcheteur() +" de numero de contrat " + contrat.getNumero() + " pour " + contrat.getQuantiteTotale() + " tonnes de " + contrat.getProduit() + " à " + contrat.getPrix() + " € la tonne");
+        if (contrat.getVendeur().equals((IVendeurContratCadre)this)){
+            this.journal_vente_CC.ajouter("[CONTRAT ACCEPTE] Contrat accepté avec " + contrat.getAcheteur() +" de numero de contrat " + contrat.getNumero() + " pour " + contrat.getQuantiteTotale() + " tonnes de " + contrat.getProduit() + " à " + contrat.getPrix() + " € la tonne");
             this.journal_negociation_CC.ajouter("[CONTRAT ACCEPTE] Contrat accepté avec " + contrat.getAcheteur() + " pour " + contrat.getQuantiteTotale() + " tonnes de " + contrat.getProduit() + " à " + contrat.getPrix() + " € la tonne"); }
         else {
             this.journal_CC_achat.ajouter("[CONTRAT ACCEPTE] Contrat avec "+ contrat.getVendeur() + " pour un prix de " + contrat.getPrix() + " et une quantitée de " + contrat.getQuantiteTotale());

@@ -40,11 +40,16 @@ public class Transformateur3AcheteurCCadre extends Transformateur3AcheteurBourse
 	public void next() {
 		super.next();
 		this.journalCC.ajouter("Etape"+Filiere.LA_FILIERE.getEtape());
-				for (Feve f : stockFeve.getFeves()) {
-					if (f == Feve.F_HQ_E || f == Feve.F_MQ_E ) { // pas top...
-						if (true) {
+			for (Feve f : stockFeve.getFeves()) {
+				if (f == Feve.F_HQ_E || f == Feve.F_MQ_E ) {
+					double stockChocoAssocie = 0;
+					if (f == Feve.F_HQ_E) stockChocoAssocie = this.getStockProduit(LamborghiniduCacao);
+					if (f == Feve.F_MQ_E) stockChocoAssocie = this.getStockProduit(Chocoenbien);
+					if (stockChocoAssocie<22000){
+						double besoin = 21200 - stockFeve.getQuantite(f) - restantDu(f);
+						if (besoin > 0) {
 							this.journalCC.ajouter("   "+f+" suffisamment peu en stock/contrat pour passer un CC");
-							double parStep = Math.max(100, (21200-stockFeve.getQuantite(f)-restantDu(f))/12); // au moins 100
+							double parStep = Math.max(100, besoin/12); // au moins 100
 							Echeancier e = new Echeancier(Filiere.LA_FILIERE.getEtape()+1, 12, parStep);
 							List<IVendeurContratCadre> vendeurs = supCC.getVendeurs(f);
 							if (vendeurs.size()>0) {
@@ -62,7 +67,10 @@ public class Transformateur3AcheteurCCadre extends Transformateur3AcheteurBourse
 							}
 						}
 					}
-				}
+					else {
+						this.journalCC.ajouter("   Achats CC suspendus pour " + f + " : Surstock de chocolat (" + stockChocoAssocie + " T)");
+					}
+			}
 		// On archive les contrats termines
 		for (ExemplaireContratCadre c : this.contratsEnCours) {
 			if (c.getQuantiteRestantALivrer()==0.0 && c.getMontantRestantARegler()<=0.0) {
@@ -77,6 +85,7 @@ public class Transformateur3AcheteurCCadre extends Transformateur3AcheteurBourse
         int etape = Filiere.LA_FILIERE.getEtape();
         journalCC.ajouter("Etape"+ etape);
 	}
+}
 
 	public double restantDu(Feve f) {
 		double res=0;
@@ -107,8 +116,13 @@ public class Transformateur3AcheteurCCadre extends Transformateur3AcheteurBourse
 			return false;
 		}
 		Feve f = (Feve) produit;
-		if (f == Feve.F_HQ_E || f == Feve.F_MQ_E) {
-        	return stockFeve.getQuantite(f) + restantDu(f) < 150000;
+		double stockChocoAssocie = 0;
+    	if (f == Feve.F_HQ_E) stockChocoAssocie = this.getStockProduit(LamborghiniduCacao);
+    	if (f == Feve.F_MQ_E) stockChocoAssocie = this.getStockProduit(Chocoenbien);
+
+    	if (f == Feve.F_HQ_E || f == Feve.F_MQ_E) {
+        	// On n'achète que si on a moins de 30k fèves ET moins de 20k tonnes de chocolat en stock
+        	return (stockFeve.getQuantite(f) + restantDu(f) < 30000) && (stockChocoAssocie < 20000);
     	}
     	return false;
 	}
