@@ -110,7 +110,8 @@ public class Récolte extends Producteur2Acteur {
         this.cout_recolte.put(Feve.F_MQ_E, cout_MQ_E);
         this.cout_recolte.put(Feve.F_BQ_E, cout_BQ_E);
         JournalRecolte.ajouter(Filiere.LA_FILIERE.getEtape() + " : Recolte de " + Prod_BQ + " t de BQ, " + Prod_MQ
-                + " t de MQ, " + Prod_HQ + " t de HQ, " + Prod_HQ_E + " t de HQ_E, " + Prod_MQ_E + " t de MQ_E et " + Prod_BQ_E + " t de BQ_E");
+                + " t de MQ, " + Prod_HQ + " t de HQ, " + Prod_HQ_E + " t de HQ_E, " + Prod_MQ_E + " t de MQ_E et "
+                + Prod_BQ_E + " t de BQ_E");
     }
 
     public void cout_plantations() {
@@ -168,37 +169,36 @@ public class Récolte extends Producteur2Acteur {
      */
     public void payerTaxesEtCharges() {
         int etape = Filiere.LA_FILIERE.getEtape();
-        // Charges fixes par an : 217.65 € -> par step (1/24 an) : 217.65 / 24
+
         double chargesFixesStep = 217.65 / 24.0;
-        
-        // Impôt foncier par hectare et par an : 20 € (taux Amérique Latine) -> par step : 20 / 24
-        double impotHectareAn = 20.0; 
+
+        double impotHectareAn = 20.0;
         double impotStep = impotHectareAn / 24.0;
-        
+
         double totalHectares = 0;
         for (Plantation p : plantations) {
             if (!p.estMorte()) {
-                totalHectares += p.getParcelles(); // 1 parcelle = 1 hectare
+                totalHectares += p.getParcelles();
             }
         }
-        
+
         double coutTotalTaxes = chargesFixesStep + (totalHectares * impotStep);
-        
+
         if (coutTotalTaxes > 0) {
-            Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Taxes foncières et charges fixes", coutTotalTaxes);
-            JournalBanque.ajouter(etape + " : Taxes et charges fixes (" + totalHectares + " ha) = " + String.format("%.2f", coutTotalTaxes) + " €");
+            Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Taxes foncières et charges fixes",
+                    coutTotalTaxes);
+            JournalBanque.ajouter(etape + " : Taxes et charges fixes (" + totalHectares + " ha) = "
+                    + String.format("%.2f", coutTotalTaxes) + " €");
         }
     }
 
     public void action_replante() {
         int etapeActuelle = Filiere.LA_FILIERE.getEtape();
 
-        // D'abord mettre à jour l'état de mort de toutes les plantations
         for (Plantation p : plantations) {
             p.mettreAJourEtatMort(etapeActuelle);
         }
 
-        // Gérer la vente des plantations mortes depuis trop longtemps
         List<Plantation> plantationsAVendre = new ArrayList<>();
         for (Plantation p : plantations) {
             if (p.doitEtreVendue(etapeActuelle)) {
@@ -206,13 +206,10 @@ public class Récolte extends Producteur2Acteur {
             }
         }
 
-        // Vendre les plantations identifiées
         for (Plantation p : plantationsAVendre) {
             double prixVente = p.calculerPrixVente();
-            // Créditer le compte bancaire avec le prix de vente
             Filiere.LA_FILIERE.getBanque().virer(null, this.cryptogramme, this, prixVente);
 
-            // Logs détaillés
             int tempsDecede = etapeActuelle - p.getEtapeMort();
             JournalBanque.ajouter(etapeActuelle + " : Vente de " + p.getParcelles() + " parcelles " + p.getTypeFeve()
                     + " pour " + prixVente + " € (morte depuis " + tempsDecede + " étapes)");
@@ -222,18 +219,14 @@ public class Récolte extends Producteur2Acteur {
             plantations.remove(p);
         }
 
-        // Ensuite gérer la replantation pour les plantations restantes
         for (Plantation p : plantations) {
-            // Récupérer le stock actuel de la fève de cette gamme
             double stockFeve = stockvar.get(p.getTypeFeve()).getValeur();
 
             if (p.Replante(stockFeve)) {
-                // Replantation réussie (stock <= stock_max et arbre mort)
                 Journalterrains.ajouter(
                         etapeActuelle + " : Replantation de " + p.getParcelles() + " parcelles de "
                                 + p.getTypeFeve() + " (stock: " + stockFeve + " t, max: " + p.getStock_max() + " t)");
             } else if (p.estMorte() && stockFeve > p.getStock_max()) {
-                // Arbre mort mais stock trop élevé : pas de replantation
                 Journalterrains.ajouter(etapeActuelle + " : Pas de replantation de " + p.getTypeFeve()
                         + " car le stock (" + stockFeve + " t) dépasse le seuil maximum (" + p.getStock_max() + " t)");
             }
@@ -338,7 +331,6 @@ public class Récolte extends Producteur2Acteur {
         ajouterPlantation(new Plantation(Feve.F_BQ_E, 0, age_init));
 
         // Certifier automatiquement 10% des parcelles HQ en équitable
-        // Paramètres : 10% certifiés, 30 ouvriers, 4€/jour, 1000€ tous les 2 steps
         this.certifierPlantationsEquitable(10.0, 30, 4.0, 1000.0);
         Journalterrains.ajouter("Initialisation - 10% des parcelles HQ certifiées équitables");
     }
@@ -373,8 +365,6 @@ public class Récolte extends Producteur2Acteur {
             prodTotale.put(f, 0.0);
         }
 
-        // On additionne les coûts amortis et la production potentielle (en t) de toutes
-        // les plantations
         for (Plantation p : plantations) {
             Feve f = p.getTypeFeve();
             coutTotalAmorti.put(f, coutTotalAmorti.get(f) + p.getcout_amorti());
@@ -393,11 +383,6 @@ public class Récolte extends Producteur2Acteur {
                 // 2)
                 if (f.isEquitable()) {
                     double coutLabelAccumule = this.getCoutEquitableAccumule(f); // Coûts de label payés
-                    // Approximation : On rajoute une estimation du cout du label par tonne
-                    // Le cout de label est déjà payé dans gererCoutsEquitables(), mais il faut le
-                    // répercuter
-                    // Un label coûte 1000 euros / mois. Produisons-nous assez pour l'absorber ?
-                    // On l'a lissé de manière très simple en ajoutant 10%
                 }
 
                 this.cout_unit_t.put(f, coutUnitaire);

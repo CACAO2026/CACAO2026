@@ -18,7 +18,7 @@ public class Producteur2VendeurCC extends Producteur2Bourse implements IVendeurC
     private SuperviseurVentesContratCadre supCC;
     private List<ExemplaireContratCadre> contratsEnCours;
     private static final double MARGE_MIN = 1.2;
-    private static final double MARGE_EQUITABLE = 2.0; // Marge plus importante pour les fèves équitables
+    private static final double MARGE_EQUITABLE = 1.7; // Marge plus importante pour les fèves équitables
 
     public Producteur2VendeurCC() {
         super();
@@ -41,9 +41,6 @@ public class Producteur2VendeurCC extends Producteur2Bourse implements IVendeurC
             this.journalContratCadre.ajouter("Stock disponible " + f + " = " + disponible);
             double seuilCC = (f == Feve.F_HQ) ? 10.0 : 100.0;
             if (disponible > seuilCC) {
-                // --- SÉCURISATION : Limiter les engagements à notre capacité de production ---
-                // On évite la faillite due à la péremption : si on s'engage sur plus que notre
-                // production et que le stock pourrit, on ne peut plus livrer !
                 double productionStep = this.feve_recolte.getOrDefault(f, 0.0);
                 double engageParStep = 0.0;
                 for (ExemplaireContratCadre c : this.contratsEnCours) {
@@ -102,9 +99,6 @@ public class Producteur2VendeurCC extends Producteur2Bourse implements IVendeurC
         double res = 0;
         for (ExemplaireContratCadre c : this.contratsEnCours) {
             if (c.getProduit().equals(f)) {
-                // Il faut absolument bloquer la quantité TOTALE restante du contrat,
-                // sinon on vend la même fève deux fois (en CC et en Bourse) et on fait faillite
-                // !
                 res += c.getQuantiteRestantALivrer();
             }
         }
@@ -136,7 +130,6 @@ public class Producteur2VendeurCC extends Producteur2Bourse implements IVendeurC
             return null;
         }
 
-        // --- SÉCURISATION : Limiter les engagements à notre capacité de production ---
         double productionStep = this.feve_recolte.getOrDefault(f, 0.0);
         double engageParStep = 0.0;
         for (ExemplaireContratCadre c : this.contratsEnCours) {

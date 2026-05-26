@@ -54,36 +54,30 @@ public class Producteur2Bourse extends Sechage implements IVendeurBourse {
 			double stockActuel = this.stockvar.get(f).getValeur();
 			double quantiteAGarder = this.restantDu(f);
 
-			// Calcul de la marge dynamique selon l'engorgement de notre entrepôt et l'âge
-			// des fèves
 			double stockTotalGlobal = this.stockTotal.getValeur();
 			double marge = 1.10; // Marge normale de 10%
 
 			int ageMax = this.getAgeAnciennete(f);
 
 			if (stockActuel > 100000.0) {
-				marge = 0.50; // LIQUIDATION: on brade pour écouler l'excédent avant destruction
-				this.journalBourse.ajouter("⚠️ LIQUIDATION pour " + f + " (Stock > 100k T). Marge baissée à 0.50");
+				marge = 0.50;
+				this.journalBourse.ajouter("Ajustement marge à 0.50 pour " + f + " (Stock > 100k T)");
 			} else if (stockTotalGlobal > 400000.0) {
-				marge = 0.90; // PANIC SELL: l'entrepôt déborde, on vend à -10% pour écouler et éviter le
-								// stopRecolte !
-				this.journalBourse.ajouter("⚠️ PANIC SELL ACTIVÉ pour " + f + " (Stock Global = " + stockTotalGlobal
-						+ " T). Marge baissée à 0.90");
-			} else if (stockTotalGlobal > 300000.0) {
-				marge = 1.00; // ALERTE: on vend à prix coûtant
-				this.journalBourse.ajouter("Alerte Stock pour " + f + " (> 300k T). Marge baissée à 1.00");
-			} else if ((f == Feve.F_HQ || f == Feve.F_HQ_E) && ageMax >= 9) {
-				marge = 0.90; // Péremption imminente (dégrade à 12)
+				marge = 0.90;
 				this.journalBourse
-						.ajouter("⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 9). Marge baissée à 0.90");
+						.ajouter("Ajustement marge à 0.90 pour " + f + " (Stock Global = " + stockTotalGlobal + " T)");
+			} else if (stockTotalGlobal > 300000.0) {
+				marge = 1.00;
+				this.journalBourse.ajouter("Ajustement marge à 1.00 pour " + f + " (Stock > 300k T)");
+			} else if ((f == Feve.F_HQ || f == Feve.F_HQ_E) && ageMax >= 9) {
+				marge = 0.90;
+				this.journalBourse.ajouter("Ajustement marge à 0.90 pour " + f + " (Âge = " + ageMax + ")");
 			} else if ((f == Feve.F_MQ || f == Feve.F_MQ_E) && ageMax >= 20) {
-				marge = 0.85; // Péremption imminente (dégrade à 24)
-				this.journalBourse.ajouter(
-						"⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 20). Marge baissée à 0.85");
+				marge = 0.85;
+				this.journalBourse.ajouter("Ajustement marge à 0.85 pour " + f + " (Âge = " + ageMax + ")");
 			} else if ((f == Feve.F_BQ || f == Feve.F_BQ_E) && ageMax >= 40) {
-				marge = 0.80; // Péremption imminente (pourrit à 48)
-				this.journalBourse.ajouter(
-						"⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 40). Marge baissée à 0.80");
+				marge = 0.80;
+				this.journalBourse.ajouter("Ajustement marge à 0.80 pour " + f + " (Âge = " + ageMax + ")");
 			}
 
 			double prixMinimal = this.cout_unit_t.get(f) * marge;

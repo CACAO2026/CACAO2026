@@ -6,7 +6,7 @@ import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.filiere.Filiere;
 
-/** @author Thomas */
+/** @author Simon */
 public class Producteur2couts extends Producteur2Stock {
     protected HashMap<Feve, Double> cout_unit_t;
     protected Journal JournalCout;
