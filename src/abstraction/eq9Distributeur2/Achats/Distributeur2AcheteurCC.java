@@ -137,41 +137,32 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
    /**
      * @author Paul Juhel
      */
+    
     @Override
     public Echeancier contrePropositionDeLAcheteur(ExemplaireContratCadre contrat) {
-
         Echeancier prop = contrat.getEcheancier();
         ChocolatDeMarque choco = (ChocolatDeMarque) contrat.getProduit();
 
-        int stepCourant = Filiere.LA_FILIERE.getEtape();
-        int stepDebut = prop.getStepDebut();
-        int nbSteps = prop.getNbEcheances();
-        double quantiteTotale = prop.getQuantiteTotale();
-
-        double stock = this.stock.getOrDefault(choco, 0.0);
+        double stockActuel = this.stock.getOrDefault(choco, 0.0);
         double enCours = restantDu(choco);
-        double stockProjete = stock + enCours;
+        double stockProjete = stockActuel + enCours;
 
-        // Stock faible : livraisons plus tôt 
-        if (stockProjete < EQ9Config.SEUIL_MIN_T) {
-            int debutSouhaite = stepCourant + 1;
-            if (stepDebut > debutSouhaite) {
-                Echeancier cp = new Echeancier(debutSouhaite, nbSteps, quantiteTotale / nbSteps);
-                journalCC.ajouter("CC échéancier : stock faible → anticipation à l'étape " + debutSouhaite);
-                return cp;
+        double quantiteProposee = prop.getQuantiteTotale();
+
+        
+        if (stockProjete > EQ9Config.STOCK_CIBLE_T) {
+            
+
+            double quantiteMini = 100.0; 
+            
+            if (quantiteProposee > quantiteMini) {
+                journalCC.ajouter("CC (Démarchage) : Surstock imposé. On réduit la proposition de " 
+                    + Math.round(quantiteProposee) + "t à " + quantiteMini + "t pour maintenir la relation.");
+                return new Echeancier(prop.getStepDebut(), prop.getNbEcheances(), quantiteMini / prop.getNbEcheances());
             }
         }
 
-        //  Stock élevé : livraisons plus tard 
-        if (stockProjete > EQ9Config.STOCK_CIBLE_T * 1.2) {
-            int debutSouhaite = stepCourant + 3;
-            if (stepDebut < debutSouhaite) {
-                Echeancier cp = new Echeancier(debutSouhaite, nbSteps, quantiteTotale / nbSteps);
-                journalCC.ajouter("CC échéancier : stock élevé → décalage à l'étape " + debutSouhaite);
-                return cp;
-            }
-        }
-        // Tout est OK :
+        // Si la quantité est déjà petite ou qu'on manque de stock
         journalCC.ajouter("CC échéancier : accepté pour " + choco.getNom());
         return prop;
     }
@@ -184,7 +175,7 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
      * @author Anass Ouisrani V1
      * @author Paul Juhel V2
      */
-   @Override
+    @Override
     public double contrePropositionPrixAcheteur(ExemplaireContratCadre contrat) {
 
         ChocolatDeMarque choco = (ChocolatDeMarque) contrat.getProduit();
@@ -195,14 +186,6 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
 
         List<Double> historique = contrat.getListePrix();
         int tours = historique.size();
-
-        //refuser si prix ne couvre pas la marge minimale estimée
-        double coutUnitaireEstime = obtenirCoutAchat(choco);
-        double prixMinGaranti = coutUnitaireEstime * (1.0 + EQ9Config.MARGE_BRUTE_MIN);
-        if (prixPropose < prixMinGaranti) {
-            journalCC.ajouter("CC : refus → prix proposé (" + prixPropose + ") < prix minimum garanti (" + prixMinGaranti + ")");
-            return -1.0;
-        }
 
         // vérifier trésorerie nette après engagements existants
         double engagementsFuturs = getTotalEngagementsFinanciersFuturs();
@@ -236,39 +219,27 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
             return tentative;
         }
 
-        //  2) Si le prix est trop haut, on descend
-        double ratio = 0.70 + 0.05 * tours; // augmente à chaque tour
-        if (ratio > 0.90) ratio = 0.90;
+        // PRIX TROP HAUT : on négocie agressivement mais sous le radar (-12%)
+        
+        // On propose une baisse de 12% par rapport à son prix
+        double proposition = prixPropose * 0.88; 
+        
+        // Mais on ne dépasse JAMAIS notre prix maximum acceptable
+        double contreProp = Math.min(proposition, prixMax);
 
-        // On descend, pas on monte
-        double contreProp = prixPropose * ratio;
-
-        // On ne dépasse jamais notre prix max
-        if (contreProp > prixMax) contreProp = prixMax;
-
+        // Vérification fonds
         double coutTotal = contreProp * quantiteTotale;
         if (solde < coutTotal) {
             journalCC.ajouter("CC : abandon → fonds insuffisants pour " + contreProp);
             return -1.0;
         }
 
-        // Si on est très proche du prix vendeur et que c'est acceptable → on accepte
-        if (contreProp >= prixPropose * 0.98 && prixPropose <= prixMax) {
-            // double-check fonds avant acceptation finale
-            if (solde < prixPropose * quantiteTotale) {
-                journalCC.ajouter("CC : refus final → fonds insuffisants pour acceptation finale (" + prixPropose + ")");
-                return -1.0;
-            }
-            journalCC.ajouter("CC : acceptation finale (" + prixPropose + ")");
-            return prixPropose;
-        }
-
-        journalCC.ajouter("CC : contre-proposition " + contreProp
+        journalCC.ajouter("CC : contre-proposition tour " + tours 
+            + " → " + contreProp
             + " (proposé=" + prixPropose + ", max=" + prixMax + ")");
 
         return contreProp;
     }
-
        
     
 
