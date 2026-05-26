@@ -41,6 +41,13 @@ public class Transformateur3VendeurAuxEncheres extends Transformateur3VendeurCCa
     public void next() {
         super.next();
         this.journalEncheres.ajouter("Etape "+Filiere.LA_FILIERE.getEtape());
+        
+        // Vérification que le superviseur est bien initialisé
+        if (this.supEncheres == null) {
+            this.journalEncheres.ajouter(Color.RED, Color.BLACK, "ERREUR : Superviseur des enchères non initialisé !");
+            return;
+        }
+        
         for (IProduit p : this.stockchocomarque.keySet()) {
             if (p instanceof ChocolatDeMarque) {
                 ChocolatDeMarque cm = (ChocolatDeMarque) p;
@@ -48,23 +55,37 @@ public class Transformateur3VendeurAuxEncheres extends Transformateur3VendeurCCa
                 double stockDispo = this.getStockProduit(cm);
                 double engagement = totalEngagement(cm); // On déduit ce qu'on doit déjà livrer en Contrat Cadre
                 double stockLibre = stockDispo - engagement;
+                
+                this.journalEncheres.ajouter("   " + cm + " : stock dispo=" + stockDispo + " T, engagement=" + engagement + " T, libre=" + stockLibre + " T");
+                
+                double quantiteAVendre = 0.0;
 
-                // Si on a un beau surplus, on en met 30% aux enchères
-                if (stockLibre > 500.0) {
-                    double quantiteAVendre = stockLibre * 0.30;
+                if (cm.equals(LamborghiniduCacao) && stockLibre > 200.0) {
+                    quantiteAVendre = stockLibre * 0.25; 
+                }
+                else if (cm.equals(Chocoenbien) && stockLibre > 1000.0) {
+                    quantiteAVendre = stockLibre * 0.15; 
+                }
+                if (quantiteAVendre > 0.0) {
                     this.journalEncheres.ajouter("   Je mets aux enchères " + quantiteAVendre + " T de " + cm);
-                    
-                    // Lancement de l'enchère via le superviseur
-                    Enchere enchereRetenue = supEncheres.vendreAuxEncheres(this, cryptogramme, cm, quantiteAVendre);
+                    try {
+                        Enchere enchereRetenue = supEncheres.vendreAuxEncheres(this, cryptogramme, cm, quantiteAVendre);
 
-                    if (enchereRetenue != null) {
-                        String acheteur = enchereRetenue.getAcheteur().getNom();
-                        this.journalEncheres.ajouter(Color.GREEN, Color.BLACK,  "  SUCCÈS : Enchère remportée par " + acheteur + " à " + enchereRetenue.getPrixTonne() + " €/T !");
-                        // Mise à jour de notre stock de chocolat
-                        this.setStockProduit(cm, this.getStockProduit(cm) - quantiteAVendre);
-                    } else {
-                        this.journalEncheres.ajouter(Color.RED, Color.BLACK, "   ÉCHEC : Aucune offre n'a été retenue pour cette enchère.");
+                        if (enchereRetenue != null) {
+                            String acheteur = enchereRetenue.getAcheteur().getNom();
+                            this.journalEncheres.ajouter(Color.GREEN, Color.BLACK,  "  SUCCÈS : Enchère remportée par " + acheteur + " à " + enchereRetenue.getPrixTonne() + " €/T !");
+                            this.setStockProduit(cm, this.getStockProduit(cm) - quantiteAVendre);
+                            this.Eq6TotalStock.retirer(this, quantiteAVendre, this.cryptogramme);
+                        } else {
+                            this.journalEncheres.ajouter(Color.RED, Color.BLACK, "   ÉCHEC : Aucune offre n'a été retenue pour cette enchère.");
+                        }
+                    } catch (Exception e) {
+                        this.journalEncheres.ajouter(Color.RED, Color.BLACK, "   ERREUR lors de la mise aux enchères : " + e.getMessage());
+                        e.printStackTrace();
                     }
+                } 
+                else {
+                    this.journalEncheres.ajouter("   Stock insuffisant ou non prioritaire pour mettre aux enchères (" + stockLibre + " T libres)");
                 }
             }
         }
@@ -84,9 +105,12 @@ public class Transformateur3VendeurAuxEncheres extends Transformateur3VendeurCCa
 
     public Enchere choisir(List<Enchere> encheres) {
         if (encheres == null || encheres.isEmpty()) {
+            this.journalEncheres.ajouter("Participation aux enchères : aucune enchère disponible");
             return null;
         }
 
+        this.journalEncheres.ajouter("Participation aux enchères : " + encheres.size() + " offre(s) reçue(s)");
+        
         // 1. Isoler l'offre la plus généreuse
         Enchere meilleureEnchere = encheres.get(0);
         for (Enchere e : encheres) {
@@ -94,25 +118,34 @@ public class Transformateur3VendeurAuxEncheres extends Transformateur3VendeurCCa
                 meilleureEnchere = e;
             }
         }
-    
+        
+        this.journalEncheres.ajouter("  Meilleure offre : " + meilleureEnchere.getPrixTonne() + " €/T de " + meilleureEnchere.getVendeur().getNom() + " pour " + meilleureEnchere.getMiseAuxEncheres().getProduit());
 
-        // 2. Définir votre prix plancher de sécurité
-        double prixPlancher = 11000.0; // Prix de base pour le MQ_E (Chocoenbien)
+        // 2. Définir prix plancher de sécurité
+        BourseCacao bourse = (BourseCacao)(Filiere.LA_FILIERE.getActeur("BourseCacao"));
+        double coursMQ = bourse.getCours(Feve.F_MQ).getValeur();
+        
+        // On demande environ le double du prix de la fève (pour couvrir transport, transfo et marge)
+        double prixPlancher = coursMQ * 2.5; 
+        
         if (meilleureEnchere.getMiseAuxEncheres().getProduit().toString().contains("HQ")) {
-            prixPlancher = 18000.0; // Prix plus exigeant pour le HQ_E (Lamborghini)
+            prixPlancher = coursMQ * 3.5; // Marge plus forte pour le HQ
         }
 
-        // 3. Rendre le verdict
+        ChocolatDeMarque cm = (ChocolatDeMarque) meilleureEnchere.getMiseAuxEncheres().getProduit();
+        if (this.getStockProduit(cm) > 5000) {
+            prixPlancher = prixPlancher * 0.75; // Rabais de 25% en cas de surstock
+            this.journalEncheres.ajouter("   Alerte Surstock : Prix plancher bradé à " + prixPlancher);
+        }
+
         if (meilleureEnchere.getPrixTonne() >= prixPlancher) {
-            this.journalEncheres.ajouter("Succès : Enchère acceptée à " + meilleureEnchere.getPrixTonne() + " €/T");
+            this.journalEncheres.ajouter(Color.GREEN, Color.BLACK, "ACHAT : Enchère acceptée à " + meilleureEnchere.getPrixTonne() + " €/T");
         
-            // Optionnel : sauvegarder le prix pour vos statistiques
-            ChocolatDeMarque cm = (ChocolatDeMarque) meilleureEnchere.getMiseAuxEncheres().getProduit();
             this.prixRetenus.get(cm).add(meilleureEnchere.getPrixTonne());
         
             return meilleureEnchere;
         } else {
-            this.journalEncheres.ajouter("Echec : Meilleure offre à " + meilleureEnchere.getPrixTonne() + " €/T (trop bas).");
+            this.journalEncheres.ajouter(Color.RED, Color.BLACK, "REFUS : Meilleure offre à " + meilleureEnchere.getPrixTonne() + " €/T (prix plancher : " + prixPlancher + " €/T)");
             return null;
         }
     }

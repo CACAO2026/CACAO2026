@@ -114,11 +114,11 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
         if (produit.contains("HQ")) {
 
-            prix = 18000.0;
+            prix = 15000.0;
 
         } else {
 
-            prix = 11000.0;
+            prix = 12000.0;
         }
 
         this.journalCCVente.ajouter(
@@ -135,8 +135,16 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
         double monDernierPrix = contrat.getListePrix().get(Math.max(0, contrat.getListePrix().size()-2));
         double prixActuel = contrat.getPrix();
+        double prix;
 
-        double prix = Math.max((prixActuel + monDernierPrix) / 2, monDernierPrix * 0.80);
+        if (prixActuel >= 0.95 * monDernierPrix) {
+
+            prix = prixActuel;
+
+        } else {
+
+            prix = 0.98 * monDernierPrix;
+        }
 
         this.journalCCVente.ajouter(
                 "Contre-proposition prix vendeur contrat "
@@ -259,13 +267,13 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
         double stockLibreLambo =
                 stockLambo - engagementLambo;
 
-        if (stockLibreLambo > 500 && !acheteursLambo.isEmpty()) {
+        if (stockLibreLambo > 300 && !acheteursLambo.isEmpty()) {
 
             IAcheteurContratCadre acheteur = acheteursLambo.get(Filiere.random.nextInt(acheteursLambo.size()));
 
             if (acheteur instanceof IDistributeurChocolatDeMarque) {
 
-                double quantite = stockLibreLambo * 0.4;
+                double quantite = stockLibreLambo * 0.5;
 
                 Echeancier e =
                         new Echeancier(
@@ -298,13 +306,13 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
         double stockLibreChoco = stockChoco - engagementChoco;
 
-        if (stockLibreChoco > 800 && !acheteursChoco.isEmpty()) {
+        if (stockLibreChoco > 500 && !acheteursChoco.isEmpty()) {
 
             IAcheteurContratCadre acheteur = acheteursChoco.get(Filiere.random.nextInt(acheteursChoco.size()));
 
             if (acheteur instanceof IDistributeurChocolatDeMarque) {
 
-                double quantite = stockLibreChoco * 0.4;
+                double quantite = stockLibreChoco * 0.35;
 
                 Echeancier e = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1,
                                 4,

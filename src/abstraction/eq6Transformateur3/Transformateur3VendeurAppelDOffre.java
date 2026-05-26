@@ -2,7 +2,6 @@ package abstraction.eq6Transformateur3;
 import abstraction.eqXRomu.appelDOffre.AppelDOffre;
 import abstraction.eqXRomu.appelDOffre.IVendeurAO;
 import abstraction.eqXRomu.appelDOffre.OffreVente;
-import abstraction.eqXRomu.appelDOffre.SuperviseurVentesAO;
 import abstraction.eqXRomu.bourseCacao.BourseCacao;
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.general.Journal;
@@ -35,6 +34,7 @@ public class Transformateur3VendeurAppelDOffre extends Transformateur3VendeurAux
 			}
 		}		
 	}
+
 	public double prixMoyen(ChocolatDeMarque cm) {
 		List<Double> prix=prixAO.get(cm);
 		if (prix.size()>0) {
@@ -66,26 +66,35 @@ public class Transformateur3VendeurAppelDOffre extends Transformateur3VendeurAux
 		if (!(p instanceof ChocolatDeMarque)) {
 			return null;
 		}
+		
 		ChocolatDeMarque cm = (ChocolatDeMarque)p;
 		if (!(stockchocomarque.keySet().contains(cm))) {
 			return null;
 		}
-		if (this.getStockProduit(cm) < offre.getQuantiteT()) {
-        	return null;
-    	}
-		if (prixAO.get(cm).size()==0) {
-			BourseCacao bourse = (BourseCacao)(Filiere.LA_FILIERE.getActeur("BourseCacao"));
-			double px = bourse.getCours(Feve.F_MQ).getMax()*1.75;
-			if (cm.getChocolat().getGamme()==Gamme.HQ) {
-				px = bourse.getCours(Feve.F_MQ).getMax()*2.5;
-			} else if (cm.getChocolat().getGamme()==Gamme.BQ) {
-				px = bourse.getCours(Feve.F_BQ).getMax()*1.75;
+		
+		double quantite = Double.min(Double.min(offre.getQuantiteT(), this.getStockPrevuProduit(cm)), this.getStockProduit(cm));
+		
+		// NOUVEAU SEUIL : 20 Tonnes au lieu de 100
+		if (quantite > 20) {
+			AppelDOffre newoffre = new AppelDOffre(offre.getAcheteur(), cm, quantite, offre.getTeteGondole());
+			
+			if (prixAO.get(cm).size() == 0) {
+				BourseCacao bourse = (BourseCacao)(Filiere.LA_FILIERE.getActeur("BourseCacao"));
+				double px = bourse.getCours(Feve.F_MQ).getMax() * 1.75;
+				if (cm.getChocolat().getGamme() == Gamme.HQ) {
+					px = bourse.getCours(Feve.F_MQ).getMax() * 2.5;
+				} else if (cm.getChocolat().getGamme() == Gamme.BQ) {
+					px = bourse.getCours(Feve.F_BQ).getMax() * 1.75;
+				}
+				return new OffreVente(newoffre, this, cm, px);
+				
+			} else {
+				// CORRECTION DU BUG D'INFLATION : On retire le *1.05
+				return new OffreVente(newoffre, this, cm, prixMoyen(cm));
 			}
-			return new OffreVente(offre, this, cm, px);
 		} else {
-			return new OffreVente(offre, this, cm, prixMoyen(cm)*0.98);
+			return null; // Pas assez de stock pour répondre
 		}
-//		return null;
 	}
 
 	public void notifierVenteAO(OffreVente propositionRetenue) {

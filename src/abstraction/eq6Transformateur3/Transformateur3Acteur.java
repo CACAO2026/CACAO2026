@@ -162,6 +162,11 @@ public class Transformateur3Acteur implements IActeur, IMarqueChocolat, IFabrica
 	// Apres chaque operation sur votre compte bancaire, cette
 	// operation est appelee pour vous en informer
 	public void notificationOperationBancaire(double montant) {
+		if (montant > 0) {
+        	this.journal.ajouter(Color.GREEN, Color.BLACK, "Virement reçu (Vente) : +" + montant + " €");
+    	} else {
+        	this.journal.ajouter(Color.RED, Color.WHITE, "Prélèvement (Achat/Frais) : " + montant + " €");
+    	}
 	}
 	
 	// Renvoie le solde actuel de l'acteur
