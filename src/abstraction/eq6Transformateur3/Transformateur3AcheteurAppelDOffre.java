@@ -46,7 +46,7 @@ public class Transformateur3AcheteurAppelDOffre extends Transformateur3VendeurAp
 		super.next();
 		this.journalAOVente.ajouter("=== STEP "+Filiere.LA_FILIERE.getEtape()+" ====================");
 		for (Feve f : this.stockFeve.getFeves()) {
-			if ((f == Feve.F_HQ_E || f == Feve.F_MQ_E) && this.stockFeve.getQuantite(f) < 95000) {
+			if ((f == Feve.F_HQ_E || f == Feve.F_MQ_E) && this.stockFeve.getQuantite(f) < 5000) {
 				int quantite = 5000 + Filiere.random.nextInt((int)(100001-this.stockFeve.getQuantite(f))); 
 				OffreVente ov = supAO.acheterParAO(this,  cryptogramme, f, quantite);
 				journalAOVente.ajouter("   Je lance un appel d'offre de "+quantite+" T de "+f);

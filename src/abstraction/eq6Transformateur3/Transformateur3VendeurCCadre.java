@@ -1,5 +1,7 @@
 package abstraction.eq6Transformateur3;
 
+import java.awt.Color;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -160,22 +162,23 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
     /* ===================================================== */
 
     public void notificationNouveauContratCadre(ExemplaireContratCadre contrat) {
+        if (contrat.getVendeur() != null && contrat.getVendeur().equals(this)) {
+                this.contratsVendus.add(contrat);
 
-        this.contratsVendus.add(contrat);
-
-        this.journalCCVente.ajouter(
-                "NOUVEAU CONTRAT SIGNE : "
-                + contrat.getNumero()
-                + " | Acheteur = "
-                + contrat.getAcheteur().getNom()
-                + " | Produit = "
-                + contrat.getProduit()
-                + " | Quantité = "
-                + contrat.getQuantiteTotale()
-                + " T"
-                + " | Prix = "
-                + contrat.getPrix()
-                + " €/T");
+                this.journalCCVente.ajouter(
+                        "NOUVEAU CONTRAT SIGNE : "
+                        + contrat.getNumero()
+                        + " | Acheteur = "
+                        + contrat.getAcheteur().getNom()
+                        + " | Produit = "
+                        + contrat.getProduit()
+                        + " | Quantité = "
+                        + contrat.getQuantiteTotale()
+                        + " T"
+                        + " | Prix = "
+                        + contrat.getPrix()
+                        + " €/T");
+        }
     }
 
     /* ===================================================== */
@@ -239,11 +242,9 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
     public void next() {
 
         super.next();
+        int etape = Filiere.LA_FILIERE.getEtape();
 
-        this.journalCCVente.ajouter(
-                "========== ETAPE "
-                + Filiere.LA_FILIERE.getEtape()
-                + " ==========");
+        this.journalCCVente.ajouter("Etape" + etape);
 
         SuperviseurVentesContratCadre sup =
                 (SuperviseurVentesContratCadre)
@@ -279,13 +280,16 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
                                 4,
                                 quantite / 4);
 
-                this.journalCCVente.ajouter(
-                        "Demande vendeur envoyée à "
-                        + acheteur.getNom()
-                        + " pour "
-                        + quantite
-                        + " T de "
-                        + LamborghiniduCacao);
+                this.journalCCVente.ajouter("   " + LamborghiniduCacao + " suffisamment en stock libre pour passer un CC");
+                this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteurs.size() + " acheteurs potentiels");
+                ExemplaireContratCadre contrat = sup.demandeVendeur(acheteur, this, LamborghiniduCacao, e, cryptogramme, false);
+
+                if (contrat == null) {
+                    this.journalCCVente.ajouter(Color.RED, Color.white, "   echec des negociations");
+                } 
+                else {
+                    this.journalCCVente.ajouter(Color.GREEN, acheteur.getColor(), "   contrat signe");
+                }
 
                 sup.demandeVendeur(
                         acheteur,
@@ -301,14 +305,11 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
         /*        CHOCOENBIEN        */
         /* ========================= */
 
-        double stockChoco =
-                this.getStockProduit(Chocoenbien);
+        double stockChoco = this.getStockProduit(Chocoenbien);
 
-        double engagementChoco =
-                totalEngagement(Chocoenbien);
+        double engagementChoco = totalEngagement(Chocoenbien);
 
-        double stockLibreChoco =
-                stockChoco - engagementChoco;
+        double stockLibreChoco = stockChoco - engagementChoco;
 
         if (stockLibreChoco > 800 && !acheteurs.isEmpty()) {
 
@@ -318,19 +319,21 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
                 double quantite = stockLibreChoco * 0.4;
 
-                Echeancier e =
-                        new Echeancier(
-                                Filiere.LA_FILIERE.getEtape() + 1,
+                Echeancier e = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1,
                                 4,
                                 quantite / 4);
 
-                this.journalCCVente.ajouter(
-                        "Demande vendeur envoyée à "
-                        + acheteur.getNom()
-                        + " pour "
-                        + quantite
-                        + " T de "
-                        + Chocoenbien);
+                this.journalCCVente.ajouter("   " + Chocoenbien + " suffisamment en stock libre pour passer un CC");
+                this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteurs.size() + " acheteurs potentiels");
+
+                ExemplaireContratCadre contrat = sup.demandeVendeur(acheteur, this, Chocoenbien, e, cryptogramme, false);
+                
+                if (contrat == null) {
+                    this.journalCCVente.ajouter(Color.RED, Color.white, "   echec des negociations");
+                } 
+                else {
+                    this.journalCCVente.ajouter(Color.GREEN, acheteur.getColor(), "   contrat signe");
+                }
 
                 sup.demandeVendeur(
                         acheteur,
@@ -346,13 +349,11 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
         /*      ARCHIVAGE CC         */
         /* ========================= */
 
-        List<ExemplaireContratCadre> termines =
-                new LinkedList<ExemplaireContratCadre>();
+        List<ExemplaireContratCadre> termines = new LinkedList<ExemplaireContratCadre>();
 
         for (ExemplaireContratCadre c : this.contratsVendus) {
 
-            if (c.getQuantiteRestantALivrer() == 0.0
-                    && c.getMontantRestantARegler() <= 0.0) {
+            if (c.getQuantiteRestantALivrer() == 0.0 && c.getMontantRestantARegler() <= 0.0) {
 
                 termines.add(c);
             }
@@ -360,12 +361,10 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
         for (ExemplaireContratCadre c : termines) {
 
-            this.journalCCVente.ajouter(
-                    "Archivage contrat "
-                    + c.getNumero());
-
+            this.journalCCVente.ajouter("Archivage contrat " + c.getNumero());
             this.contratsVendus.remove(c);
         }
+        this.journalCCVente.ajouter("Etape" + etape);
     }
 
     /* ===================================================== */

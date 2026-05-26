@@ -22,7 +22,7 @@ public class StockFeve{
 
     public StockFeve() {
         stock = new HashMap<>();
-        stock.put(Feve.F_BQ , 100000.0);
+        stock.put(Feve.F_BQ , 0.0);
         stock.put(Feve.F_BQ_E, 0.0);
         stock.put(Feve.F_HQ,0.0);
         stock.put(Feve.F_HQ_E,0.0);
