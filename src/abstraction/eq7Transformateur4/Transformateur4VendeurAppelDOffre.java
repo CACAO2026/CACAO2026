@@ -40,11 +40,9 @@ public class Transformateur4VendeurAppelDOffre extends Transformateur4VendeurAux
         BourseCacao bourse = (BourseCacao)(Filiere.LA_FILIERE.getActeur("BourseCacao"));
 
         AppelDOffre nouv_offre = new AppelDOffre(offre.getAcheteur(),offre.getProduit(), quantiteT, offre.getTeteGondole() );
-        double prixTonne;
-    
-        if (offre.getAcheteur().equals(Filiere.LA_FILIERE.getActeur("EQXD"))){
+        if (offre.getAcheteur().getNom().equals("EQXD")){
             this.journal_vente_AO.ajouter("Proposition de vente de "+offre.getQuantiteT()+" T de "+cdm+" à "+bourse.getCours(Feve.F_BQ).getValeur()*1.75+" €/T par "+offre.getAcheteur().getNom());
-            return new OffreVente(nouv_offre, this, cdm, bourse.getCours(Feve.F_BQ).getValeur()*1.75);
+            return new OffreVente(nouv_offre, this, cdm, bourse.getCours(Feve.F_BQ).getValeur()*1.74);
         }
         else {
             this.journal_vente_AO.ajouter("Proposition de vente de "+offre.getQuantiteT()+" T de "+cdm+" à "+6000+" €/T par "+offre.getAcheteur().getNom());

@@ -46,6 +46,11 @@ public class Transformateur4Vente extends Transformateur4Production implements I
     public double propositionPrix(ExemplaireContratCadre contrat) {
         if (contrat.getProduit() instanceof ChocolatDeMarque){
         this.journal_negociation_CC.ajouter("[Prix acheteur] Proposition de Contrat avec négociation du prix " + contrat.getPrix());
+        if (contrat.getAcheteur().getNom().equals("EQ9") && Filiere.LA_FILIERE.getEtape()>1){
+            double prixMoyen = Filiere.LA_FILIERE.prixMoyen((ChocolatDeMarque)(contrat.getProduit()),Filiere.LA_FILIERE.getEtape()-1);
+            double prixUnitaire = Math.min(prixMoyen*1.149, 6000);
+            return prixUnitaire;
+        }
         if (Double.isNaN(contrat.getPrix())){
             this.journal_negociation_CC.ajouter("[Prix vendeur] Proposition de Contrat avec "+ contrat.getAcheteur() + ", négociation du prix " + this.cout_prod.getValeur()*3);
             return this.cout_prod.getValeur()*3;
