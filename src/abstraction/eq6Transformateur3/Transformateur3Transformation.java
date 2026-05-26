@@ -318,18 +318,22 @@ public class Transformateur3Transformation extends Transformateur3Acteur{
 
     // Retrait des fèves du stock
         this.stockFeve.retirerQuantite(feve, quantiteFevesUtilisee);
+        this.Eq6TotalStock.retirer(this, quantiteFevesUtilisee, this.cryptogramme);
 
         if (chocolatProduit == Chocolat.C_HQ_E) {
         double stockActuel = this.getStockProduit(this.LamborghiniduCacao);
         this.setStockProduit(this.LamborghiniduCacao, stockActuel + quantiteChocolatProduite);
+        this.Eq6TotalStock.ajouter(this, quantiteChocolatProduite, this.cryptogramme);
         journaltransfo.ajouter("Ajout de " + quantiteChocolatProduite + " T de " + this.LamborghiniduCacao + " au stock de chocolat de marque");
         } else if (chocolatProduit == Chocolat.C_MQ_E) {
             double stockActuel = this.getStockProduit(this.Chocoenbien);
             this.setStockProduit(this.Chocoenbien, stockActuel + quantiteChocolatProduite);
+            this.Eq6TotalStock.ajouter(this, quantiteChocolatProduite, this.cryptogramme);
             journaltransfo.ajouter("Ajout de " + quantiteChocolatProduite + " T de " + this.Chocoenbien + " au stock de chocolat de marque");
         } 
         else {
             this.stockChocolat.ajouterQuantite(chocolatProduit, quantiteChocolatProduite);
+            this.Eq6TotalStock.ajouter(this, quantiteChocolatProduite, this.cryptogramme);
         }
 
        double cout= coutTransformation(quantiteChocolatProduite); 

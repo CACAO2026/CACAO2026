@@ -74,7 +74,6 @@ public class Transformateur3VendeurAppelDOffre extends Transformateur3VendeurAux
 		
 		double quantite = Double.min(Double.min(offre.getQuantiteT(), this.getStockPrevuProduit(cm)), this.getStockProduit(cm));
 		
-		// NOUVEAU SEUIL : 20 Tonnes au lieu de 100
 		if (quantite > 20) {
 			AppelDOffre newoffre = new AppelDOffre(offre.getAcheteur(), cm, quantite, offre.getTeteGondole());
 			
@@ -89,7 +88,6 @@ public class Transformateur3VendeurAppelDOffre extends Transformateur3VendeurAux
 				return new OffreVente(newoffre, this, cm, px);
 				
 			} else {
-				// CORRECTION DU BUG D'INFLATION : On retire le *1.05
 				return new OffreVente(newoffre, this, cm, prixMoyen(cm));
 			}
 		} else {

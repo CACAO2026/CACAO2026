@@ -161,6 +161,7 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
     /* ===================================================== */
 
     public void notificationNouveauContratCadre(ExemplaireContratCadre contrat) {
+        super.notificationNouveauContratCadre(contrat);
         if (contrat.getVendeur() != null && contrat.getVendeur().equals(this)) {
                 this.contratsVendus.add(contrat);
 
