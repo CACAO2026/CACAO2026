@@ -70,6 +70,9 @@ public class Transformateur3VendeurAppelDOffre extends Transformateur3VendeurAux
 		if (!(stockchocomarque.keySet().contains(cm))) {
 			return null;
 		}
+		if (this.getStockProduit(cm) < offre.getQuantiteT()) {
+        	return null;
+    	}
 		if (prixAO.get(cm).size()==0) {
 			BourseCacao bourse = (BourseCacao)(Filiere.LA_FILIERE.getActeur("BourseCacao"));
 			double px = bourse.getCours(Feve.F_MQ).getMax()*1.75;
@@ -86,14 +89,19 @@ public class Transformateur3VendeurAppelDOffre extends Transformateur3VendeurAux
 	}
 
 	public void notifierVenteAO(OffreVente propositionRetenue) {
-		ChocolatDeMarque cm = (ChocolatDeMarque)(propositionRetenue.getProduit());
-		double px = propositionRetenue.getPrixT();
-		double quantite = propositionRetenue.getQuantiteT();
-		prixAO.get(cm).add(px);
-		journalAO.ajouter("   Vente par AO de "+quantite+" T de "+cm+" au prix de  "+px);
-		if (prixAO.get(cm).size()>10) {
-			prixAO.get(cm).remove(0); 
-		}
+    	ChocolatDeMarque cm = (ChocolatDeMarque)(propositionRetenue.getProduit());
+    	double px = propositionRetenue.getPrixT();
+    	double quantite = propositionRetenue.getQuantiteT();
+    
+    
+    	double stockActuel = this.getStockProduit(cm);
+    	this.setStockProduit(cm, stockActuel - quantite);
+
+    	prixAO.get(cm).add(px);
+    	journalAO.ajouter("   Vente par AO de "+quantite+" T de "+cm+" au prix de  "+px);
+    	if (prixAO.get(cm).size()>10) {
+        	prixAO.get(cm).remove(0); 
+    	}
 	}
 
 

@@ -267,7 +267,7 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
         if (stockLibreLambo > 500 && !acheteurs.isEmpty()) {
 
-            IAcheteurContratCadre acheteur = acheteurs.get(0);
+            IAcheteurContratCadre acheteur = acheteurs.get(Filiere.random.nextInt(acheteurs.size()));
 
             if (acheteur instanceof IDistributeurChocolatDeMarque) {
 
@@ -312,7 +312,7 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
         if (stockLibreChoco > 800 && !acheteurs.isEmpty()) {
 
-            IAcheteurContratCadre acheteur = acheteurs.get(0);
+            IAcheteurContratCadre acheteur = acheteurs.get(Filiere.random.nextInt(acheteurs.size()));
 
             if (acheteur instanceof IDistributeurChocolatDeMarque) {
 
