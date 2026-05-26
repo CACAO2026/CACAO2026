@@ -108,8 +108,13 @@ public class Transformateur3AcheteurCCadre extends Transformateur3AcheteurBourse
 			return false;
 		}
 		Feve f = (Feve) produit;
-		if (f == Feve.F_HQ_E || f == Feve.F_MQ_E) {
-        	return stockFeve.getQuantite(f) + restantDu(f) < 150000;
+		double stockChocoAssocie = 0;
+    	if (f == Feve.F_HQ_E) stockChocoAssocie = this.getStockProduit(LamborghiniduCacao);
+    	if (f == Feve.F_MQ_E) stockChocoAssocie = this.getStockProduit(Chocoenbien);
+
+    	if (f == Feve.F_HQ_E || f == Feve.F_MQ_E) {
+        	// On n'achète que si on a moins de 150k fèves ET moins de 50k tonnes de chocolat en stock
+        	return (stockFeve.getQuantite(f) + restantDu(f) < 150000) && (stockChocoAssocie < 50000);
     	}
     	return false;
 	}
