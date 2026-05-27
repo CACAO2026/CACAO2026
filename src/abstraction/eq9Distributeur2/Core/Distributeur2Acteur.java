@@ -345,19 +345,17 @@ public class Distributeur2Acteur implements IActeur, IDistributeurChocolatDeMarq
      * @author Anass Ouisrani
      */
     protected double obtenirCoutAchat(ChocolatDeMarque choco) {
-        int etape = Filiere.LA_FILIERE.getEtape();
-        if (etape < 1)
-            return prix(choco) * 0.75; // estimation par défaut
-
-        // Le prix moyen du marché est la meilleure approximation
-        // du coût d'achat réel
-        double prixMoyen = Filiere.LA_FILIERE.prixMoyen(choco, etape - 1);
-        if (prixMoyen > 0)
-            return prixMoyen;
-
-        // Fallback : 75% de notre prix de vente
-        return prix(choco) * 0.75;
+    // On utilise des estimations de prix d'achat B2B réalistes au lieu du prix de vente B2C
+    switch (choco.getChocolat()) {
+        case C_HQ_E: return 12000.0; // Haute qualité équitable
+        case C_HQ:   return 10000.0;
+        case C_MQ_E: return 8000.0;
+        case C_MQ:   return 7000.0;
+        case C_BQ_E: return 5500.0;
+        case C_BQ:   return 4500.0;
+        default:     return 6000.0;
     }
+}
 
     /**
      * Estime la demande clients pour un produit (placeholder)

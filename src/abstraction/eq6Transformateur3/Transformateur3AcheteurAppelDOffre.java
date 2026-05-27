@@ -46,13 +46,26 @@ public class Transformateur3AcheteurAppelDOffre extends Transformateur3VendeurAp
 		super.next();
 		this.journalAOVente.ajouter("=== STEP "+Filiere.LA_FILIERE.getEtape()+" ====================");
 		for (Feve f : this.stockFeve.getFeves()) {
-			if ((f == Feve.F_HQ_E || f == Feve.F_MQ_E) && this.stockFeve.getQuantite(f) < 95000) {
-				int quantite = 5000 + Filiere.random.nextInt((int)(100001-this.stockFeve.getQuantite(f))); 
-				OffreVente ov = supAO.acheterParAO(this,  cryptogramme, f, quantite);
-				journalAOVente.ajouter("   Je lance un appel d'offre de "+quantite+" T de "+f);
-				if (ov!=null) { // on a retenu l'une des offres de vente
-					journalAOVente.ajouter("   AO finalise : on ajoute "+quantite+" T de "+f+" au stock");
-					stockFeve.ajouterQuantite(f, quantite);
+			if ((f == Feve.F_HQ_E || f == Feve.F_MQ_E)) {
+
+				double stockChocoAssocie = 0.0;
+				if (f == Feve.F_HQ_E) {
+					stockChocoAssocie = this.getStockProduit(LamborghiniduCacao);
+				} else if (f == Feve.F_MQ_E) {
+					stockChocoAssocie = this.getStockProduit(Chocoenbien);
+				}
+
+				if (this.stockFeve.getQuantite(f) < 5000 && stockChocoAssocie < 15000) {
+					int quantite = 5000 + Filiere.random.nextInt((int)(100001-this.stockFeve.getQuantite(f))); 
+					OffreVente ov = supAO.acheterParAO(this,  cryptogramme, f, quantite);
+					journalAOVente.ajouter("   Je lance un appel d'offre de "+quantite+" T de "+f);
+					if (ov!=null) { // on a retenu l'une des offres de vente
+						journalAOVente.ajouter("   AO finalise : on ajoute "+quantite+" T de "+f+" au stock");
+						stockFeve.ajouterQuantite(f, quantite);
+					}
+
+				} else if (stockChocoAssocie >= 15000) {
+					journalAOVente.ajouter("   Trop de chocolat en stock (" + stockChocoAssocie + " T). AO annulé pour " + f);
 				}
 			}
 		}

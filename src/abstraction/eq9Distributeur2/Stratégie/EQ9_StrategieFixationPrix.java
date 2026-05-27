@@ -43,7 +43,7 @@ public class EQ9_StrategieFixationPrix {
     public double calculerPrixVente(
         double coutAchatEuroPT,
         String nomProduit,
-        double inventaireT,      // ⚠ tu travailles en TONNES, pas en kg
+        double inventaireT,    
         double demandeClients,
         double prixConcurrentEuro
     ) {
