@@ -86,7 +86,6 @@ public class Transformateur3VendeurAppelDOffre extends Transformateur3VendeurAux
 					px = bourse.getCours(Feve.F_BQ).getMax() * 1.75;
 				}
 				return new OffreVente(newoffre, this, cm, px);
-				
 			} else {
 				return new OffreVente(newoffre, this, cm, prixMoyen(cm));
 			}

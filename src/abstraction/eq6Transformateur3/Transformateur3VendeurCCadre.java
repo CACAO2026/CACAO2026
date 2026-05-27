@@ -65,6 +65,11 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
         return total;
     }
 
+    @Override
+    public double engagement(IProduit produit) {
+        return totalEngagement(produit);
+    }
+
     /* ===================================================== */
     /*              NEGOCIATION ECHEANCIER                  */
     /* ===================================================== */
@@ -268,29 +273,31 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
         double stockLibreLambo =
                 stockLambo - engagementLambo;
 
-        if (stockLibreLambo > 300 && !acheteursLambo.isEmpty()) {
+        if (stockLibreLambo > 1200 && !acheteursLambo.isEmpty()) {
 
             IAcheteurContratCadre acheteur = acheteursLambo.get(Filiere.random.nextInt(acheteursLambo.size()));
 
             if (acheteur instanceof IDistributeurChocolatDeMarque) {
 
-                double quantite = stockLibreLambo * 0.5;
+                double quantite = stockLibreLambo * 0.25;
+                quantite = Math.max(0.0, Math.min(quantite, stockLibreLambo - 500.0));
 
-                Echeancier e =
-                        new Echeancier(
-                                Filiere.LA_FILIERE.getEtape() + 1,
-                                4,
-                                quantite / 4);
+                if (quantite > 800.0) {
+                    Echeancier e =
+                            new Echeancier(
+                                    Filiere.LA_FILIERE.getEtape() + 1,
+                                    4,
+                                    quantite / 4);
 
-                this.journalCCVente.ajouter("   " + LamborghiniduCacao + " suffisamment en stock libre pour passer un CC");
-                this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteursLambo.size() + " acheteurs potentiels");
-                ExemplaireContratCadre contrat = sup.demandeVendeur(acheteur, this, LamborghiniduCacao, e, cryptogramme, false);
+                    this.journalCCVente.ajouter("   " + LamborghiniduCacao + " suffisamment en stock libre pour passer un CC");
+                    this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteursLambo.size() + " acheteurs potentiels");
+                    ExemplaireContratCadre contrat = sup.demandeVendeur(acheteur, this, LamborghiniduCacao, e, cryptogramme, false);
 
-                if (contrat == null) {
-                    this.journalCCVente.ajouter(Color.RED, Color.white, "   echec des negociations");
-                } 
-                else {
-                    this.journalCCVente.ajouter(Color.GREEN, acheteur.getColor(), "   contrat signe");
+                    if (contrat == null) {
+                        this.journalCCVente.ajouter(Color.RED, Color.white, "   echec des negociations");
+                    } else {
+                        this.journalCCVente.ajouter(Color.GREEN, acheteur.getColor(), "   contrat signe");
+                    }
                 }
             }
         }
@@ -307,28 +314,30 @@ public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre 
 
         double stockLibreChoco = stockChoco - engagementChoco;
 
-        if (stockLibreChoco > 500 && !acheteursChoco.isEmpty()) {
+        if (stockLibreChoco > 2000 && !acheteursChoco.isEmpty()) {
 
             IAcheteurContratCadre acheteur = acheteursChoco.get(Filiere.random.nextInt(acheteursChoco.size()));
 
             if (acheteur instanceof IDistributeurChocolatDeMarque) {
 
-                double quantite = stockLibreChoco * 0.35;
+                double quantite = stockLibreChoco * 0.20;
+                quantite = Math.max(0.0, Math.min(quantite, stockLibreChoco - 700.0));
 
-                Echeancier e = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1,
-                                4,
-                                quantite / 4);
+                if (quantite > 1000.0) {
+                    Echeancier e = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1,
+                                    4,
+                                    quantite / 4);
 
-                this.journalCCVente.ajouter("   " + Chocoenbien + " suffisamment en stock libre pour passer un CC");
-                this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteursChoco.size() + " acheteurs potentiels");
+                    this.journalCCVente.ajouter("   " + Chocoenbien + " suffisamment en stock libre pour passer un CC");
+                    this.journalCCVente.ajouter("   " + acheteur.getNom() + " retenu comme acheteur parmi " + acheteursChoco.size() + " acheteurs potentiels");
 
-                ExemplaireContratCadre contrat = sup.demandeVendeur(acheteur, this, Chocoenbien, e, cryptogramme, false);
-                
-                if (contrat == null) {
-                    this.journalCCVente.ajouter(Color.RED, Color.white, "   echec des negociations");
-                } 
-                else {
-                    this.journalCCVente.ajouter(Color.GREEN, acheteur.getColor(), "   contrat signe");
+                    ExemplaireContratCadre contrat = sup.demandeVendeur(acheteur, this, Chocoenbien, e, cryptogramme, false);
+                    
+                    if (contrat == null) {
+                        this.journalCCVente.ajouter(Color.RED, Color.white, "   echec des negociations");
+                    } else {
+                        this.journalCCVente.ajouter(Color.GREEN, acheteur.getColor(), "   contrat signe");
+                    }
                 }
             }
         }

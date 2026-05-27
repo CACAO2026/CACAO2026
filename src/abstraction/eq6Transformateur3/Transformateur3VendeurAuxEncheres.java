@@ -13,6 +13,7 @@ import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.Feve;
+import abstraction.eqXRomu.produits.Gamme;
 import abstraction.eqXRomu.produits.IProduit;
 /** @author Le Clézio Brevael */  
 
@@ -60,11 +61,11 @@ public class Transformateur3VendeurAuxEncheres extends Transformateur3VendeurCCa
                 
                 double quantiteAVendre = 0.0;
 
-                if (cm.equals(LamborghiniduCacao) && stockLibre > 200.0) {
-                    quantiteAVendre = stockLibre * 0.25; 
-                }
-                else if (cm.equals(Chocoenbien) && stockLibre > 1000.0) {
+                if (cm.equals(LamborghiniduCacao) && stockLibre > 1500.0) {
                     quantiteAVendre = stockLibre * 0.15; 
+                }
+                else if (cm.equals(Chocoenbien) && stockLibre > 3000.0) {
+                    quantiteAVendre = stockLibre * 0.10; 
                 }
                 if (quantiteAVendre > 0.0) {
                     this.journalEncheres.ajouter("   Je mets aux enchères " + quantiteAVendre + " T de " + cm);

@@ -357,14 +357,26 @@ public class Transformateur3Transformation extends Transformateur3Acteur{
      *
      * noteMarque par défaut = 1.0
      */
+    public double engagement(IProduit produit) {
+        return 0.0;
+    }
+
     public void next() {
         super.next();
         double capaciteRestante = capaciteProduction();
         double noteMarque = 1.0;
         double totalProduit = 0.0;
 
+        double besoinLambo = Math.max(0.0, engagement(LamborghiniduCacao) - getStockProduit(LamborghiniduCacao));
+        double besoinChoco = Math.max(0.0, engagement(Chocoenbien) - getStockProduit(Chocoenbien));
+        double besoinInput = (besoinLambo * 0.8) + (besoinChoco * 0.6);
+        double reserveInput = Math.min(capaciteRestante, besoinInput + 1500.0);
+        if (reserveInput <= 0.0) {
+            reserveInput = Math.min(capaciteRestante, 2000.0);
+        }
+
         for (Feve feve : this.stockFeve.getFeves()) {
-            if (capaciteRestante <= 0.0) {
+            if (capaciteRestante <= 0.0 || reserveInput <= 0.0) {
                 break;
             }
 
@@ -382,14 +394,27 @@ public class Transformateur3Transformation extends Transformateur3Acteur{
                 pourcentageCacao = 0.80;
             }
 
-            double quantiteATransformer = Math.min(stock, capaciteRestante);
+            double quantiteATransformer = Math.min(stock, Math.min(capaciteRestante, reserveInput));
+            if (quantiteATransformer <= 0.0) {
+                continue;
+            }
+
+            if (besoinLambo <= 0.0 && besoinChoco <= 0.0 && feve != Feve.F_HQ_E && feve != Feve.F_MQ_E) {
+                quantiteATransformer = Math.min(quantiteATransformer, 500.0);
+            }
+
+            if (quantiteATransformer <= 0.0) {
+                continue;
+            }
 
             Chocolat choco = transformer(feve, quantiteATransformer, pourcentageCacao, noteMarque);
             if (choco != null) {
                 capaciteRestante -= quantiteATransformer;
+                reserveInput -= quantiteATransformer;
                 totalProduit += quantiteATransformer / pourcentageCacao;
             }
         }
+
         double coutTotal = coutTransformation(totalProduit);
         if (coutTotal > 0) {
             Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Salaires + RH + Charges", coutTotal);

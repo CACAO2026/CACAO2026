@@ -55,8 +55,8 @@ public class Transformateur3AcheteurAppelDOffre extends Transformateur3VendeurAp
 					stockChocoAssocie = this.getStockProduit(Chocoenbien);
 				}
 
-				if (this.stockFeve.getQuantite(f) < 5000 && stockChocoAssocie < 15000) {
-					int quantite = 5000 + Filiere.random.nextInt((int)(100001-this.stockFeve.getQuantite(f))); 
+				if (this.stockFeve.getQuantite(f) < 5000 && stockChocoAssocie < 12000) {
+					int quantite = 5000 + Filiere.random.nextInt((int)(50001-this.stockFeve.getQuantite(f))); 
 					OffreVente ov = supAO.acheterParAO(this,  cryptogramme, f, quantite);
 					journalAOVente.ajouter("   Je lance un appel d'offre de "+quantite+" T de "+f);
 					if (ov!=null) { // on a retenu l'une des offres de vente
