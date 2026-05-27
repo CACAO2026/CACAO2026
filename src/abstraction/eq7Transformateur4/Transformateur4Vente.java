@@ -43,6 +43,7 @@ public class Transformateur4Vente extends Transformateur4Production implements I
     }
 
     @Override
+    //Auteur Matteo
     public double propositionPrix(ExemplaireContratCadre contrat) {
         if (contrat.getProduit() instanceof ChocolatDeMarque){
         this.journal_negociation_CC.ajouter("[Prix acheteur] Proposition de Contrat avec négociation du prix " + contrat.getPrix());
