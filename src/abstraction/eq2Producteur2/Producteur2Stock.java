@@ -54,9 +54,22 @@ public class Producteur2Stock {
 
     public void next() {
         gererPeremption();
+        gererExcedentStock();
         setStockMin(0.1);
         TaxeStockage();
         setTotalStock();
+    }
+
+    public void gererExcedentStock() {
+        double limiteParFeve = 100000.0; // Limite de sécurité par type de fève
+        for (Feve f : Feve.values()) {
+            Variable stockVarFeve = this.stockvar.get(f);
+            if (stockVarFeve != null && stockVarFeve.getValeur() > limiteParFeve) {
+                double aJeter = stockVarFeve.getValeur() - limiteParFeve;
+                this.retirerDuStock(f, aJeter);
+                this.journalStock.ajouter("Destruction de " + aJeter + " T de " + f + " (limite stock atteinte).");
+            }
+        }
     }
 
     public void gererPeremption() {
@@ -94,13 +107,10 @@ public class Producteur2Stock {
                 stockSource.remove(stepProd);
 
                 if (destination != null) {
-                    // On transfère vers la destination avec le même step_prod d'origine (l'âge est
-                    // conservé)
+                    // On transfère vers la destination avec le même step_prod d'origine)
                     HashMap<Integer, Double> stockDest = this.stock.get(destination);
                     stockDest.put(stepProd, stockDest.getOrDefault(stepProd, 0.0) + quantite);
 
-                    // Mise à jour rapide des variables (sera recalculé via setTotalStock de toute
-                    // façon)
                     Variable vSource = this.stockvar.get(source);
                     Variable vDest = this.stockvar.get(destination);
                     if (vSource != null)
@@ -118,7 +128,6 @@ public class Producteur2Stock {
             }
         }
 
-        // Log s'il y a eu des dégradations
         if (quantiteDegradeeTotale > 0.0) {
             if (destination != null) {
                 this.journalStock.ajouter(Filiere.LA_FILIERE.getEtape() + " : DÉGRADATION - " + quantiteDegradeeTotale

@@ -54,6 +54,8 @@ public class Producteur2Acteur extends Producteur2couts implements IActeur {
 	/** @author Thomas */
 	public void next() {
 		super.next();
+		// Mettre à jour les salaires en fonction du solde
+		mettreAJourSalaireEmployes();
 		double total = 0.0;
 		for (Feve f : Feve.values()) {
 			Variable v = this.stockvar.get(f);
@@ -141,6 +143,20 @@ public class Producteur2Acteur extends Producteur2couts implements IActeur {
 	// Renvoie le solde actuel de l'acteur
 	protected double getSolde() {
 		return Filiere.LA_FILIERE.getBanque().getSolde(Filiere.LA_FILIERE.getActeur(getNom()), this.cryptogramme);
+	}
+
+	/**
+	 * Met à jour le salaire des employés de toutes les plantations en fonction 
+	 * du solde actuel. L'augmentation est de 5% par million d'euros supplémentaires 
+	 * à partir de 10 millions d'euros.
+	 */
+	protected void mettreAJourSalaireEmployes() {
+		double soldeActuel = this.getSolde();
+		if (this.plantations != null) {
+			for (Plantation plantation : this.plantations) {
+				plantation.calculerAugmentationSalaire(soldeActuel);
+			}
+		}
 	}
 
 	@Override
