@@ -254,6 +254,9 @@ public class Transformateur3Acteur implements IActeur, IMarqueChocolat, IFabrica
 	}
 	}
 
+	public double engagement(IProduit produit) {
+		return 0.0;
+	}
 
 	/* =============================================================== */
 	/*                  IAcheteurBourse implementation                 */
